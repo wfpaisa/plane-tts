@@ -1,0 +1,23 @@
+{
+  "name": "plane-tts",
+  "version": "1.0.0",
+  "description": "GNOME Shell TTS extension using OmniVoice",
+  "author": "Felipe <felipe@wfelipe.com>",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "bun run build:schema && bun run build:translations",
+    "build:schema": "glib-compile-schemas schemas/",
+    "build:translations": "mkdir -p locale/es/LC_MESSAGES locale/en/LC_MESSAGES && msgfmt po/es.po -o locale/es/LC_MESSAGES/plane-tts@wfelipe.com.mo && msgfmt po/en.po -o locale/en/LC_MESSAGES/plane-tts@wfelipe.com.mo",
+    "create:translations": "xgettext --from-code=UTF-8 --output=po/plane-tts@wfelipe.com.pot *.js",
+    "merge:translations": "for file in po/*.po; do msgmerge --update --no-fuzzy-matching -N $file po/plane-tts@wfelipe.com.pot --backup=none; done",
+    "update:translations": "bun run create:translations && bun run merge:translations && bun run build:translations",
+    "install:extension": "bash install.sh",
+    "enable": "gnome-extensions enable plane-tts@wfelipe.com",
+    "disable": "gnome-extensions disable plane-tts@wfelipe.com",
+    "prefs": "gnome-extensions prefs plane-tts@wfelipe.com",
+    "logs": "journalctl -f -o cat /usr/bin/gnome-shell",
+    "logs:extension": "journalctl -f -o cat /usr/bin/gnome-shell | grep 'Plane TTS'",
+    "wayland:session": "dbus-run-session gnome-shell --devkit --wayland"
+  }
+}

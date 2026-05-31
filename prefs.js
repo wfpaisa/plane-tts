@@ -17,22 +17,22 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     // ── Voice Mode Page ──
     const modePage = new Adw.PreferencesPage({
-      title: _("Voice"),
+      title: _("Voz"),
       icon_name: "audio-speakers-symbolic",
     });
     window.add(modePage);
 
     // Mode selection group
     const modeGroup = new Adw.PreferencesGroup({
-      title: _("Voice Mode"),
-      description: _("Choose how the voice is generated"),
+      title: _("Modo de voz"),
+      description: _("Elige cómo se genera la voz"),
     });
     modePage.add(modeGroup);
 
     const modeRow = new Adw.ComboRow({
-      title: _("Mode"),
+      title: _("Modo"),
       subtitle: _(
-        "Clone uses a reference audio, Design uses a text description, Auto lets the model decide",
+        "Clonar usa un audio de referencia, Diseñar usa una descripción de texto, Auto deja que el modelo decida",
       ),
       model: Gtk.StringList.new(["clone", "design", "auto"]),
     });
@@ -51,30 +51,32 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     // ── Clone settings group ──
     const cloneGroup = new Adw.PreferencesGroup({
-      title: _("Voice Cloning"),
+      title: _("Clonación de voz"),
       description: _(
-        "Use a reference audio to clone a voice. Leave reference text empty for auto-transcription (Whisper).",
+        "Usa un audio de referencia para clonar una voz. Deja el texto de referencia vacío para auto-transcripción (Whisper).",
       ),
     });
     modePage.add(cloneGroup);
 
     // Ref audio file chooser
     const refAudioRow = new Adw.ActionRow({
-      title: _("Reference Audio"),
-      subtitle: settings.get_string("ref-audio-path") || _("No file selected"),
+      title: _("Audio de referencia"),
+      subtitle:
+        settings.get_string("ref-audio-path") ||
+        _("Ningún archivo seleccionado"),
     });
 
     const chooseButton = new Gtk.Button({
-      label: _("Choose File"),
+      label: _("Elegir archivo"),
       valign: Gtk.Align.CENTER,
     });
     chooseButton.connect("clicked", () => {
       const dialog = new Gtk.FileDialog({
-        title: _("Select Reference Audio"),
+        title: _("Seleccionar audio de referencia"),
       });
 
       const audioFilter = new Gtk.FileFilter();
-      audioFilter.set_name(_("Audio Files"));
+      audioFilter.set_name(_("Archivos de audio"));
       audioFilter.add_mime_type("audio/wav");
       audioFilter.add_mime_type("audio/x-wav");
       audioFilter.add_mime_type("audio/flac");
@@ -104,11 +106,11 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     const clearButton = new Gtk.Button({
       icon_name: "edit-clear-symbolic",
       valign: Gtk.Align.CENTER,
-      tooltip_text: _("Clear"),
+      tooltip_text: _("Limpiar"),
     });
     clearButton.connect("clicked", () => {
       settings.set_string("ref-audio-path", "");
-      refAudioRow.set_subtitle(_("No file selected"));
+      refAudioRow.set_subtitle(_("Ningún archivo seleccionado"));
     });
 
     refAudioRow.add_suffix(chooseButton);
@@ -117,7 +119,7 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     // Ref text
     const refTextRow = new Adw.EntryRow({
-      title: _("Reference Text (optional)"),
+      title: _("Texto de referencia (opcional)"),
       text: settings.get_string("ref-text"),
       show_apply_button: true,
     });
@@ -128,13 +130,13 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     // ── Design settings group ──
     const designGroup = new Adw.PreferencesGroup({
-      title: _("Voice Design"),
-      description: _("Describe the desired voice characteristics"),
+      title: _("Diseño de voz"),
+      description: _("Describe las características de voz deseadas"),
     });
     modePage.add(designGroup);
 
     const instructRow = new Adw.EntryRow({
-      title: _("Voice Description"),
+      title: _("Descripción de voz"),
       text: settings.get_string("instruct-text"),
       show_apply_button: true,
     });
@@ -148,22 +150,22 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     // ── Generation Parameters Page ──
     const paramsPage = new Adw.PreferencesPage({
-      title: _("Parameters"),
+      title: _("Parámetros"),
       icon_name: "preferences-system-symbolic",
     });
     window.add(paramsPage);
 
     const genGroup = new Adw.PreferencesGroup({
-      title: _("Generation Parameters"),
-      description: _("Advanced parameters for audio generation"),
+      title: _("Parámetros de generación"),
+      description: _("Parámetros avanzados para la generación de audio"),
     });
     paramsPage.add(genGroup);
 
     // Num steps
     const numStepRow = new Adw.SpinRow({
-      title: _("Diffusion Steps"),
+      title: _("Pasos de difusión"),
       subtitle: _(
-        "Higher = better quality but slower (16 for fast, 32 for quality)",
+        "Mayor = mejor calidad pero más lento (16 para rápido, 32 para calidad)",
       ),
       adjustment: new Gtk.Adjustment({
         lower: 4,
@@ -183,8 +185,8 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     // Speed
     const speedRow = new Adw.SpinRow({
-      title: _("Speed"),
-      subtitle: _("> 1.0 = faster speech, < 1.0 = slower speech"),
+      title: _("Velocidad"),
+      subtitle: _("> 1.0 = habla más rápida, < 1.0 = habla más lenta"),
       digits: 2,
       adjustment: new Gtk.Adjustment({
         lower: 0.1,
@@ -199,8 +201,8 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     // Guidance scale
     const guidanceRow = new Adw.SpinRow({
-      title: _("Guidance Scale"),
-      subtitle: _("Classifier-free guidance scale"),
+      title: _("Escala de guía"),
+      subtitle: _("Escala de guía libre de clasificador"),
       digits: 1,
       adjustment: new Gtk.Adjustment({
         lower: 0.0,
@@ -220,21 +222,22 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     // ── Shortcut Page ──
     const shortcutPage = new Adw.PreferencesPage({
-      title: _("Shortcut"),
+      title: _("Atajo"),
       icon_name: "preferences-desktop-keyboard-shortcuts-symbolic",
     });
     window.add(shortcutPage);
 
     const shortcutGroup = new Adw.PreferencesGroup({
-      title: _("Keyboard Shortcut"),
-      description: _("Shortcut to read the selected text aloud"),
+      title: _("Atajo de teclado"),
+      description: _("Atajo para leer el texto seleccionado en voz alta"),
     });
     shortcutPage.add(shortcutGroup);
 
     const currentShortcut = settings.get_strv("tts-shortcut");
     const shortcutRow = new Adw.ActionRow({
-      title: _("TTS Shortcut"),
-      subtitle: currentShortcut.length > 0 ? currentShortcut[0] : _("Not set"),
+      title: _("Atajo TTS"),
+      subtitle:
+        currentShortcut.length > 0 ? currentShortcut[0] : _("No configurado"),
     });
     shortcutGroup.add(shortcutRow);
   }

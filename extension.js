@@ -4,7 +4,10 @@ import Meta from "gi://Meta";
 import Shell from "gi://Shell";
 import St from "gi://St";
 
-import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
+import {
+  Extension,
+  gettext as _,
+} from "resource:///org/gnome/shell/extensions/extension.js";
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
 import * as PopupMenu from "resource:///org/gnome/shell/ui/popupMenu.js";
@@ -33,11 +36,11 @@ export default class PlaneTTSExtension extends Extension {
     this._indicator.add_child(this._icon);
 
     // Popup menu
-    const readItem = new PopupMenu.PopupMenuItem("Leer selección");
+    const readItem = new PopupMenu.PopupMenuItem(_("Leer selección"));
     readItem.connect("activate", () => this._onActivate());
     this._indicator.menu.addMenuItem(readItem);
 
-    const stopItem = new PopupMenu.PopupMenuItem("Detener");
+    const stopItem = new PopupMenu.PopupMenuItem(_("Detener"));
     stopItem.connect("activate", () => this._stopAll());
     this._indicator.menu.addMenuItem(stopItem);
 
@@ -141,7 +144,7 @@ export default class PlaneTTSExtension extends Extension {
       // Try each mime type in order
       const tryMimeType = (index) => {
         if (index >= mimeTypes.length) {
-          reject(new Error("No text found in selection"));
+          reject(new Error(_("No se encontró texto en la selección")));
           return;
         }
 
@@ -196,7 +199,7 @@ export default class PlaneTTSExtension extends Extension {
       // Get selected text
       const text = await this._getSelectedText();
       if (!text) {
-        console.warn("[Plane TTS] No text selected");
+        console.warn(_("[Plane TTS] No hay texto seleccionado"));
         this._setStatus("error");
         return;
       }
