@@ -1,0 +1,15 @@
+.plane-tts-indicator {
+  /* normal state */
+}
+
+.plane-tts-loading .system-status-icon {
+  color: #f5c211;
+}
+
+.plane-tts-error .system-status-icon {
+  color: #e01b24;
+}
+
+.plane-tts-speaking .system-status-icon {
+  color: #26a269;
+}

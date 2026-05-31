@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.plane-tts"
+          path="/org/gnome/shell/extensions/plane-tts/">
+
+    <key name="tts-shortcut" type="as">
+      <default>['&lt;Super&gt;&lt;Shift&gt;t']</default>
+      <summary>TTS Shortcut</summary>
+      <description>Keyboard shortcut to read the selected text aloud</description>
+    </key>
+
+  </schema>
+</schemalist>
