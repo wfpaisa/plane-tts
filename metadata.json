@@ -2,7 +2,7 @@
   "uuid": "plane-tts@wfelipe.com",
   "name": "Plane TTS",
   "description": "Text-to-Speech using selected text with OmniVoice",
-  "shell-version": ["49"],
+  "shell-version": ["49", "50"],
   "settings-schema": "org.gnome.shell.extensions.plane-tts",
   "url": "https://github.com/wfelipe/plane-tts"
 }
