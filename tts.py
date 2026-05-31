@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Plane TTS - Generate speech from text using OmniVoice."""
+"""Plane TTS - Genera audio hablado a partir de texto usando OmniVoice.
+
+Este script es invocado por la extensión de GNOME Shell como subproceso.
+Recibe el texto a sintetizar por stdin y los parámetros de generación como
+argumentos CLI. Genera un archivo WAV y devuelve su ruta por stdout.
+
+Se implementó como script separado (no integrado en la extensión) porque:
+- OmniVoice requiere Python con PyTorch/CUDA, incompatible con GJS
+- Permite usar un virtualenv independiente con todas las dependencias de ML
+- Evita bloquear GNOME Shell durante la generación (se ejecuta en un proceso aparte)
+"""
 
 import sys
 import argparse
@@ -7,6 +17,9 @@ import json
 from pathlib import Path
 
 
+# Punto de entrada principal. Parsea los argumentos, lee el texto de stdin,
+# carga el modelo OmniVoice y genera el audio. Se diseñó como función única
+# porque el script tiene un solo flujo lineal: entrada → modelo → salida.
 def main():
     parser = argparse.ArgumentParser(description="Generate TTS audio with OmniVoice")
     parser.add_argument(
@@ -60,13 +73,17 @@ def main():
     )
     args = parser.parse_args()
 
-    # Read text from stdin
+    # Lee el texto a sintetizar desde stdin. Se usa stdin en vez de argumento
+    # CLI para evitar problemas con caracteres especiales (comillas, saltos de
+    # línea) y para soportar textos largos sin límite de longitud de argv.
     text = sys.stdin.read().strip()
     if not text:
         print("Error: no text provided on stdin", file=sys.stderr)
         sys.exit(1)
 
-    # Validate mode-specific args
+    # Valida que el audio de referencia exista en modo clone. Es necesario
+    # verificar aquí para dar un error claro antes de cargar el modelo (que
+    # tarda varios segundos en inicializar).
     if args.mode == "clone" and args.ref_audio:
         ref_audio = Path(args.ref_audio)
         if not ref_audio.exists():
@@ -81,13 +98,19 @@ def main():
         import soundfile as sf
         import torch
 
+        # Carga el modelo OmniVoice en GPU con precisión float16.
+        # Se usa from_pretrained() que descarga/cachea el modelo automáticamente.
+        # En la primera ejecución tarda más; las siguientes usan el cache local.
         model = OmniVoice.from_pretrained(
             "k2-fsa/OmniVoice",
             device_map="cuda:0",
             dtype=torch.float16,
         )
 
-        # Build generation kwargs
+        # Construye los kwargs de generación según el modo seleccionado.
+        # Se usa un diccionario dinámico porque cada modo requiere parámetros
+        # diferentes: clone necesita ref_audio/ref_text, design necesita instruct,
+        # y auto no necesita parámetros extra.
         gen_kwargs = {
             "text": text,
             "num_step": args.num_step,
@@ -104,8 +127,12 @@ def main():
                 gen_kwargs["instruct"] = args.instruct
         # auto mode: no extra args needed
 
+        # Genera el audio. model.generate() retorna una lista de np.ndarray
+        # con shape (T,) a 24 kHz. Se toma el primer elemento [0].
         audio = model.generate(**gen_kwargs)
 
+        # Guarda el audio como WAV a 24kHz y devuelve la ruta por stdout.
+        # La extensión de GNOME Shell lee stdout para saber dónde está el archivo.
         sf.write(args.output, audio[0], 24000)
         print(args.output, end="")
 

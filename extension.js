@@ -12,7 +12,6 @@ import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
 import * as PopupMenu from "resource:///org/gnome/shell/ui/popupMenu.js";
 
-const PYTHON_BIN = "/home/felipe/projects/OmniVoice/.venv/bin/python";
 const OUTPUT_PATH = "/tmp/plane-tts-output.wav";
 
 export default class PlaneTTSExtension extends Extension {
@@ -36,13 +35,19 @@ export default class PlaneTTSExtension extends Extension {
     this._indicator.add_child(this._icon);
 
     // Popup menu
-    const readItem = new PopupMenu.PopupMenuItem(_("Leer selección"));
+    const readItem = new PopupMenu.PopupMenuItem(_("Read Selection"));
     readItem.connect("activate", () => this._onActivate());
     this._indicator.menu.addMenuItem(readItem);
 
-    const stopItem = new PopupMenu.PopupMenuItem(_("Detener"));
+    const stopItem = new PopupMenu.PopupMenuItem(_("Stop"));
     stopItem.connect("activate", () => this._stopAll());
     this._indicator.menu.addMenuItem(stopItem);
+
+    this._indicator.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
+    const prefsItem = new PopupMenu.PopupMenuItem(_("Settings"));
+    prefsItem.connect("activate", () => this.openPreferences());
+    this._indicator.menu.addMenuItem(prefsItem);
 
     Main.panel.addToStatusArea(this.uuid, this._indicator);
 
@@ -144,7 +149,7 @@ export default class PlaneTTSExtension extends Extension {
       // Try each mime type in order
       const tryMimeType = (index) => {
         if (index >= mimeTypes.length) {
-          reject(new Error(_("No se encontró texto en la selección")));
+          reject(new Error(_("No text found in selection")));
           return;
         }
 
@@ -199,7 +204,7 @@ export default class PlaneTTSExtension extends Extension {
       // Get selected text
       const text = await this._getSelectedText();
       if (!text) {
-        console.warn(_("[Plane TTS] No hay texto seleccionado"));
+        console.warn(_("[Plane TTS] No text selected"));
         this._setStatus("error");
         return;
       }
@@ -245,9 +250,10 @@ export default class PlaneTTSExtension extends Extension {
     const numStep = this._settings.get_int("num-step");
     const speed = this._settings.get_double("speed");
     const guidanceScale = this._settings.get_double("guidance-scale");
+    const pythonBin = this._settings.get_string("python-bin");
 
     const argv = [
-      PYTHON_BIN,
+      pythonBin,
       scriptPath,
       "--mode",
       mode,

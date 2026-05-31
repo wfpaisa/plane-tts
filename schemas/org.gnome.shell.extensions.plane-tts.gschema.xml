@@ -55,5 +55,12 @@
       <description>Classifier-free guidance scale</description>
     </key>
 
+    <!-- Python binary path: reemplazar [USER] por tu nombre de usuario -->
+    <key name="python-bin" type="s">
+      <default>'/home/[USER]/projects/OmniVoice/.venv/bin/python'</default>
+      <summary>Python Binary</summary>
+      <description>Path to the Python binary with OmniVoice installed (virtualenv). Replace [USER] with your username.</description>
+    </key>
+
   </schema>
 </schemalist>

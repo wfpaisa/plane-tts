@@ -8,155 +8,173 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 16:09-0500\n"
+"POT-Creation-Date: 2026-05-31 18:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:39
-msgid "Leer selección"
+#: extension.js:38
+msgid "Read Selection"
 msgstr ""
 
-#: extension.js:43
-msgid "Detener"
+#: extension.js:42
+msgid "Stop"
 msgstr ""
 
-#: extension.js:147
-msgid "No se encontró texto en la selección"
+#: extension.js:48
+msgid "Settings"
 msgstr ""
 
-#: extension.js:202
-msgid "[Plane TTS] No hay texto seleccionado"
+#: extension.js:152
+msgid "No text found in selection"
+msgstr ""
+
+#: extension.js:207
+msgid "[Plane TTS] No text selected"
 msgstr ""
 
 #: prefs.js:20
-msgid "Voz"
+msgid "Voice"
 msgstr ""
 
 #: prefs.js:27
-msgid "Modo de voz"
+msgid "Voice Mode"
 msgstr ""
 
 #: prefs.js:28
-msgid "Elige cómo se genera la voz"
+msgid "Choose how the voice is generated"
 msgstr ""
 
 #: prefs.js:33
-msgid "Modo"
+msgid "Mode"
 msgstr ""
 
 #: prefs.js:35
 msgid ""
-"Clonar usa un audio de referencia, Diseñar usa una descripción de texto, "
-"Auto deja que el modelo decida"
+"Clone uses a reference audio, Design uses a text description, Auto lets the "
+"model decide"
 msgstr ""
 
 #: prefs.js:54
-msgid "Clonación de voz"
+msgid "Voice Cloning"
 msgstr ""
 
 #: prefs.js:56
 msgid ""
-"Usa un audio de referencia para clonar una voz. Deja el texto de referencia "
-"vacío para auto-transcripción (Whisper)."
+"Use a reference audio to clone a voice. Leave the reference text empty for "
+"auto-transcription (Whisper)."
 msgstr ""
 
 #: prefs.js:63
-msgid "Audio de referencia"
+msgid "Reference Audio"
 msgstr ""
 
 #: prefs.js:66 prefs.js:113
-msgid "Ningún archivo seleccionado"
+msgid "No file selected"
 msgstr ""
 
 #: prefs.js:70
-msgid "Elegir archivo"
+msgid "Choose File"
 msgstr ""
 
 #: prefs.js:75
-msgid "Seleccionar audio de referencia"
+msgid "Select Reference Audio"
 msgstr ""
 
 #: prefs.js:79
-msgid "Archivos de audio"
+msgid "Audio Files"
 msgstr ""
 
 #: prefs.js:109
-msgid "Limpiar"
+msgid "Clear"
 msgstr ""
 
 #: prefs.js:122
-msgid "Texto de referencia (opcional)"
+msgid "Reference Text (optional)"
 msgstr ""
 
 #: prefs.js:133
-msgid "Diseño de voz"
+msgid "Voice Design"
 msgstr ""
 
 #: prefs.js:134
-msgid "Describe las características de voz deseadas"
+msgid "Describe the desired voice characteristics"
 msgstr ""
 
 #: prefs.js:139
-msgid "Descripción de voz"
+msgid "Voice Description"
 msgstr ""
 
 #: prefs.js:153
-msgid "Parámetros"
+msgid "Parameters"
 msgstr ""
 
 #: prefs.js:159
-msgid "Parámetros de generación"
+msgid "Generation Parameters"
 msgstr ""
 
 #: prefs.js:160
-msgid "Parámetros avanzados para la generación de audio"
+msgid "Advanced parameters for audio generation"
 msgstr ""
 
 #: prefs.js:166
-msgid "Pasos de difusión"
+msgid "Diffusion Steps"
 msgstr ""
 
 #: prefs.js:168
-msgid "Mayor = mejor calidad pero más lento (16 para rápido, 32 para calidad)"
+msgid "Higher = better quality but slower (16 for fast, 32 for quality)"
 msgstr ""
 
 #: prefs.js:188
-msgid "Velocidad"
+msgid "Speed"
 msgstr ""
 
 #: prefs.js:189
-msgid "> 1.0 = habla más rápida, < 1.0 = habla más lenta"
+msgid "> 1.0 = faster speech, < 1.0 = slower speech"
 msgstr ""
 
 #: prefs.js:204
-msgid "Escala de guía"
+msgid "Guidance Scale"
 msgstr ""
 
 #: prefs.js:205
-msgid "Escala de guía libre de clasificador"
+msgid "Classifier-free guidance scale"
 msgstr ""
 
 #: prefs.js:225
-msgid "Atajo"
+msgid "Python"
 msgstr ""
 
-#: prefs.js:231
-msgid "Atajo de teclado"
+#: prefs.js:227
+msgid ""
+"Path to the Python binary with OmniVoice installed (virtualenv). Replace "
+"[USER] with your username."
 msgstr ""
 
-#: prefs.js:232
-msgid "Atajo para leer el texto seleccionado en voz alta"
+#: prefs.js:233
+msgid "Python Path"
 msgstr ""
 
-#: prefs.js:238
-msgid "Atajo TTS"
+#: prefs.js:244
+msgid "Shortcut"
 msgstr ""
 
-#: prefs.js:240
-msgid "No configurado"
+#: prefs.js:250
+msgid "Keyboard Shortcut"
+msgstr ""
+
+#: prefs.js:251
+msgid "Shortcut to read the selected text aloud"
+msgstr ""
+
+#: prefs.js:257
+msgid "TTS Shortcut"
+msgstr ""
+
+#: prefs.js:259
+msgid "Not configured"
 msgstr ""
