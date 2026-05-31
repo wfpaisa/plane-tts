@@ -9,5 +9,51 @@
       <description>Keyboard shortcut to read the selected text aloud</description>
     </key>
 
+    <!-- Voice mode: "clone", "design", or "auto" -->
+    <key name="voice-mode" type="s">
+      <default>'clone'</default>
+      <summary>Voice Mode</summary>
+      <description>Voice generation mode: clone (ref audio), design (instruct text), or auto</description>
+    </key>
+
+    <!-- Clone mode settings -->
+    <key name="ref-audio-path" type="s">
+      <default>''</default>
+      <summary>Reference Audio Path</summary>
+      <description>Path to the reference audio file for voice cloning</description>
+    </key>
+
+    <key name="ref-text" type="s">
+      <default>''</default>
+      <summary>Reference Text</summary>
+      <description>Transcription of the reference audio (leave empty for auto-transcription via Whisper)</description>
+    </key>
+
+    <!-- Design mode settings -->
+    <key name="instruct-text" type="s">
+      <default>'female, neutral accent'</default>
+      <summary>Voice Design Instruction</summary>
+      <description>Text description for voice design mode (e.g. "male, British accent, low pitch")</description>
+    </key>
+
+    <!-- Generation parameters -->
+    <key name="num-step" type="i">
+      <default>32</default>
+      <summary>Diffusion Steps</summary>
+      <description>Number of iterative unmasking steps. Higher = better quality but slower. Use 16 for faster inference.</description>
+    </key>
+
+    <key name="speed" type="d">
+      <default>1.0</default>
+      <summary>Speed Factor</summary>
+      <description>Speed factor: values greater than 1.0 produce faster speech, less than 1.0 produce slower speech</description>
+    </key>
+
+    <key name="guidance-scale" type="d">
+      <default>2.0</default>
+      <summary>Guidance Scale</summary>
+      <description>Classifier-free guidance scale</description>
+    </key>
+
   </schema>
 </schemalist>

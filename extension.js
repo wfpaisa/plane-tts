@@ -10,10 +10,12 @@ import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
 import * as PopupMenu from "resource:///org/gnome/shell/ui/popupMenu.js";
 
 const PYTHON_BIN = "/home/felipe/projects/OmniVoice/.venv/bin/python";
-const REF_TEXT = "Transcription of the reference audio.";
 const OUTPUT_PATH = "/tmp/plane-tts-output.wav";
 
 export default class PlaneTTSExtension extends Extension {
+  // Inicializa la extensión: crea el indicador en el panel superior, registra
+  // el atajo de teclado y prepara el estado interno. Se llama cuando GNOME Shell
+  // habilita la extensión (login, desbloqueo o activación manual).
   enable() {
     this._settings = this.getSettings();
     this._cancellable = null;
@@ -51,6 +53,11 @@ export default class PlaneTTSExtension extends Extension {
     );
   }
 
+  // Deshabilita la extensión: detiene cualquier proceso TTS activo, remueve
+  // el atajo de teclado y destruye el indicador del panel. Se llama al bloquear
+  // la pantalla, desinstalar o deshabilitar la extensión. Es obligatorio limpiar
+  // todo lo creado en enable() para evitar memory leaks y que la extensión
+  // pase la revisión de GNOME Extensions.
   disable() {
     this._stopAll();
 
@@ -62,6 +69,10 @@ export default class PlaneTTSExtension extends Extension {
     this._settings = null;
   }
 
+  // Detiene todos los procesos activos (generación TTS y reproducción de audio)
+  // y restaura el ícono del panel a su estado normal. Se necesita porque el
+  // usuario puede querer cancelar una generación en curso, o porque disable()
+  // debe asegurar que no queden procesos huérfanos al deshabilitar la extensión.
   _stopAll() {
     if (this._cancellable) {
       this._cancellable.cancel();
@@ -78,6 +89,10 @@ export default class PlaneTTSExtension extends Extension {
     this._setStatus("normal");
   }
 
+  // Cambia el estado visual del indicador en el panel (normal, loading, speaking,
+  // error). Se implementó para dar feedback visual al usuario sobre qué está
+  // haciendo la extensión: amarillo = generando audio, verde = reproduciendo,
+  // rojo = error (se auto-restaura a normal después de 3 segundos).
   _setStatus(status) {
     if (!this._indicator) return;
 
@@ -107,6 +122,11 @@ export default class PlaneTTSExtension extends Extension {
     }
   }
 
+  // Obtiene el texto actualmente seleccionado (resaltado con el mouse) en
+  // cualquier aplicación usando la PRIMARY selection de X11/Wayland. Intenta
+  // múltiples tipos MIME en orden de preferencia porque distintas aplicaciones
+  // exponen el texto seleccionado en formatos diferentes. Retorna una Promise
+  // porque la API de Meta.Selection es asíncrona.
   _getSelectedText() {
     return new Promise((resolve, reject) => {
       const selection = global.display.get_selection();
@@ -162,8 +182,11 @@ export default class PlaneTTSExtension extends Extension {
     });
   }
 
+  // Método principal que orquesta todo el flujo TTS: obtener texto seleccionado
+  // → ejecutar el script Python de OmniVoice → reproducir el audio generado.
+  // Se activa al presionar el atajo de teclado o al hacer clic en "Leer selección"
+  // del menú. Cancela cualquier TTS previo en curso antes de iniciar uno nuevo.
   async _onActivate() {
-    // Cancel any ongoing TTS
     this._stopAll();
     this._cancellable = new Gio.Cancellable();
 
@@ -184,9 +207,8 @@ export default class PlaneTTSExtension extends Extension {
 
       // Run TTS Python script
       const scriptPath = GLib.build_filenamev([this.path, "tts.py"]);
-      const refAudioPath = GLib.build_filenamev([this.path, "ref.wav"]);
 
-      await this._runTTS(text, scriptPath, refAudioPath);
+      await this._runTTS(text, scriptPath);
 
       if (this._cancellable?.is_cancelled()) return;
 
@@ -211,20 +233,54 @@ export default class PlaneTTSExtension extends Extension {
     }
   }
 
-  _runTTS(text, scriptPath, refAudioPath) {
+  // Construye los argumentos de línea de comandos para el script tts.py según
+  // el modo de voz seleccionado (clone/design/auto) y los parámetros de
+  // generación configurados en las preferencias. Se separó en su propio método
+  // para mantener _runTTS() limpio y facilitar la lectura del código.
+  _buildTTSArgs(scriptPath) {
+    const mode = this._settings.get_string("voice-mode");
+    const numStep = this._settings.get_int("num-step");
+    const speed = this._settings.get_double("speed");
+    const guidanceScale = this._settings.get_double("guidance-scale");
+
+    const argv = [
+      PYTHON_BIN,
+      scriptPath,
+      "--mode",
+      mode,
+      "--output",
+      OUTPUT_PATH,
+      "--num-step",
+      numStep.toString(),
+      "--speed",
+      speed.toString(),
+      "--guidance-scale",
+      guidanceScale.toString(),
+    ];
+
+    if (mode === "clone") {
+      const refAudio = this._settings.get_string("ref-audio-path");
+      const refText = this._settings.get_string("ref-text");
+      if (refAudio) argv.push("--ref-audio", refAudio);
+      if (refText) argv.push("--ref-text", refText);
+    } else if (mode === "design") {
+      const instruct = this._settings.get_string("instruct-text");
+      if (instruct) argv.push("--instruct", instruct);
+    }
+
+    return argv;
+  }
+
+  // Ejecuta el script Python tts.py como subproceso, enviándole el texto a
+  // sintetizar por stdin. Usa Gio.Subprocess porque GNOME Shell no permite
+  // operaciones bloqueantes (congelaría todo el escritorio). El texto se envía
+  // por stdin en vez de argumento CLI para evitar problemas con caracteres
+  // especiales y textos largos.
+  _runTTS(text, scriptPath) {
     return new Promise((resolve, reject) => {
       try {
         const proc = new Gio.Subprocess({
-          argv: [
-            PYTHON_BIN,
-            scriptPath,
-            "--ref-audio",
-            refAudioPath,
-            "--ref-text",
-            REF_TEXT,
-            "--output",
-            OUTPUT_PATH,
-          ],
+          argv: this._buildTTSArgs(scriptPath),
           flags:
             Gio.SubprocessFlags.STDIN_PIPE |
             Gio.SubprocessFlags.STDOUT_PIPE |
@@ -259,6 +315,10 @@ export default class PlaneTTSExtension extends Extension {
     });
   }
 
+  // Reproduce el archivo WAV generado usando paplay (compatible con PulseAudio
+  // y PipeWire). Se usa un subproceso externo en lugar de Meta.SoundPlayer
+  // porque este último está diseñado para sonidos cortos de notificación y no
+  // para audio largo de TTS.
   _playAudio(audioPath) {
     return new Promise((resolve, reject) => {
       try {

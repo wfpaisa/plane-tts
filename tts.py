@@ -3,29 +3,60 @@
 
 import sys
 import argparse
-import tempfile
+import json
 from pathlib import Path
 
 
 def main():
     parser = argparse.ArgumentParser(description="Generate TTS audio with OmniVoice")
     parser.add_argument(
+        "--mode",
+        type=str,
+        choices=["clone", "design", "auto"],
+        default="clone",
+        help="Voice generation mode",
+    )
+    parser.add_argument(
         "--ref-audio",
         type=str,
-        required=True,
+        default="",
         help="Path to reference audio file for voice cloning",
     )
     parser.add_argument(
         "--ref-text",
         type=str,
         default="",
-        help="Transcription of the reference audio",
+        help="Transcription of the reference audio (empty = auto-transcribe)",
+    )
+    parser.add_argument(
+        "--instruct",
+        type=str,
+        default="",
+        help="Voice design instruction text",
     )
     parser.add_argument(
         "--output",
         type=str,
         default="/tmp/plane-tts-output.wav",
         help="Output WAV file path",
+    )
+    parser.add_argument(
+        "--num-step",
+        type=int,
+        default=32,
+        help="Number of diffusion steps",
+    )
+    parser.add_argument(
+        "--speed",
+        type=float,
+        default=1.0,
+        help="Speed factor",
+    )
+    parser.add_argument(
+        "--guidance-scale",
+        type=float,
+        default=2.0,
+        help="Classifier-free guidance scale",
     )
     args = parser.parse_args()
 
@@ -35,9 +66,14 @@ def main():
         print("Error: no text provided on stdin", file=sys.stderr)
         sys.exit(1)
 
-    ref_audio = Path(args.ref_audio)
-    if not ref_audio.exists():
-        print(f"Error: reference audio not found: {ref_audio}", file=sys.stderr)
+    # Validate mode-specific args
+    if args.mode == "clone" and args.ref_audio:
+        ref_audio = Path(args.ref_audio)
+        if not ref_audio.exists():
+            print(f"Error: reference audio not found: {ref_audio}", file=sys.stderr)
+            sys.exit(1)
+    elif args.mode == "clone" and not args.ref_audio:
+        print("Error: --ref-audio is required for clone mode", file=sys.stderr)
         sys.exit(1)
 
     try:
@@ -51,11 +87,24 @@ def main():
             dtype=torch.float16,
         )
 
-        audio = model.generate(
-            text=text,
-            ref_audio=str(ref_audio),
-            ref_text=args.ref_text,
-        )
+        # Build generation kwargs
+        gen_kwargs = {
+            "text": text,
+            "num_step": args.num_step,
+            "speed": args.speed,
+            "guidance_scale": args.guidance_scale,
+        }
+
+        if args.mode == "clone":
+            gen_kwargs["ref_audio"] = args.ref_audio
+            if args.ref_text:
+                gen_kwargs["ref_text"] = args.ref_text
+        elif args.mode == "design":
+            if args.instruct:
+                gen_kwargs["instruct"] = args.instruct
+        # auto mode: no extra args needed
+
+        audio = model.generate(**gen_kwargs)
 
         sf.write(args.output, audio[0], 24000)
         print(args.output, end="")
