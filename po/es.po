@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plane-tts@wfelipe.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 18:20-0500\n"
+"POT-Creation-Date: 2026-05-31 18:40-0500\n"
 "PO-Revision-Date: 2026-05-31 18:20-0500\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
@@ -35,49 +35,55 @@ msgstr "No se encontró texto en la selección"
 msgid "[Plane TTS] No text selected"
 msgstr "[Plane TTS] No hay texto seleccionado"
 
-#: prefs.js:20
+#: prefs.js:21
 msgid "Voice"
 msgstr "Voz"
 
-#: prefs.js:27
+#: prefs.js:28
 msgid "Voice Mode"
 msgstr "Modo de voz"
 
-#: prefs.js:28
-msgid "Choose how the voice is generated"
-msgstr "Elige cómo se genera la voz"
+#: prefs.js:29
+msgid "Select the method used to generate the voice that will read your text"
+msgstr "Selecciona el método para generar la voz que leerá tu texto"
 
-#: prefs.js:33
+#: prefs.js:34
 msgid "Mode"
 msgstr "Modo"
 
-#: prefs.js:35
+#: prefs.js:36
 msgid ""
-"Clone uses a reference audio, Design uses a text description, Auto lets the "
-"model decide"
+"Clone: imitates a voice from an audio sample. Design: creates a voice from a "
+"written description. Auto: the system chooses automatically"
 msgstr ""
-"Clonar usa un audio de referencia, Diseñar usa una descripción de texto, "
-"Auto deja que el modelo decida"
+"Clonar: imita una voz a partir de una muestra de audio. Diseñar: crea una "
+"voz a partir de una descripción escrita. Auto: el sistema elige automáticamente"
 
-#: prefs.js:54
+#: prefs.js:55
 msgid "Voice Cloning"
 msgstr "Clonación de voz"
 
-#: prefs.js:56
+#: prefs.js:57
 msgid ""
-"Use a reference audio to clone a voice. Leave the reference text empty for "
-"auto-transcription (Whisper)."
+"Upload a short audio sample of the voice you want to imitate. Optionally "
+"write what is said in the audio, or leave it empty to detect it "
+"automatically."
 msgstr ""
-"Usa un audio de referencia para clonar una voz. Deja el texto de referencia "
-"vacío para auto-transcripción (Whisper)."
+"Sube una muestra corta de audio de la voz que quieres imitar. Opcionalmente "
+"escribe lo que se dice en el audio, o déjalo vacío para detectarlo "
+"automáticamente."
 
-#: prefs.js:63
+#: prefs.js:64
 msgid "Reference Audio"
 msgstr "Audio de referencia"
 
-#: prefs.js:66 prefs.js:113
+#: prefs.js:65 prefs.js:113
 msgid "No file selected"
 msgstr "Ningún archivo seleccionado"
+
+#: prefs.js:66
+msgid "A short audio file (WAV, MP3, FLAC) with the voice you want to clone"
+msgstr "Un archivo de audio corto (WAV, MP3, FLAC) con la voz que quieres clonar"
 
 #: prefs.js:70
 msgid "Choose File"
@@ -99,86 +105,204 @@ msgstr "Limpiar"
 msgid "Reference Text (optional)"
 msgstr "Texto de referencia (opcional)"
 
-#: prefs.js:133
+#: prefs.js:125
+msgid ""
+"Write exactly what is said in the reference audio. If left empty, it will be "
+"detected automatically"
+msgstr ""
+"Escribe exactamente lo que se dice en el audio de referencia. Si se deja "
+"vacío, se detectará automáticamente"
+
+#: prefs.js:134
 msgid "Voice Design"
 msgstr "Diseño de voz"
 
-#: prefs.js:134
-msgid "Describe the desired voice characteristics"
-msgstr "Describe las características de voz deseadas"
+#: prefs.js:135
+msgid ""
+"Create a custom voice by describing how you want it to sound, without "
+"needing an audio sample"
+msgstr ""
+"Crea una voz personalizada describiendo cómo quieres que suene, sin "
+"necesitar una muestra de audio"
 
-#: prefs.js:139
+#: prefs.js:140
 msgid "Voice Description"
 msgstr "Descripción de voz"
 
-#: prefs.js:153
+#: prefs.js:143
+msgid ""
+"Example: 'female, calm tone, neutral accent' or 'male, deep voice, British "
+"accent'"
+msgstr ""
+"Ejemplo: 'femenina, tono calmado, acento neutro' o 'masculina, voz grave, "
+"acento británico'"
+
+#: prefs.js:155
 msgid "Parameters"
 msgstr "Parámetros"
 
-#: prefs.js:159
+#: prefs.js:161
 msgid "Generation Parameters"
 msgstr "Parámetros de generación"
 
-#: prefs.js:160
-msgid "Advanced parameters for audio generation"
-msgstr "Parámetros avanzados para la generación de audio"
-
-#: prefs.js:166
-msgid "Diffusion Steps"
-msgstr "Pasos de difusión"
+#: prefs.js:162
+msgid ""
+"Adjust these values to control the quality and speed of the generated audio"
+msgstr ""
+"Ajusta estos valores para controlar la calidad y velocidad del audio generado"
 
 #: prefs.js:168
-msgid "Higher = better quality but slower (16 for fast, 32 for quality)"
-msgstr "Mayor = mejor calidad pero más lento (16 para rápido, 32 para calidad)"
+msgid "Quality"
+msgstr "Calidad"
 
-#: prefs.js:188
+#: prefs.js:170
+msgid ""
+"Controls audio quality. 16 = fast but lower quality, 32 = best quality but "
+"slower"
+msgstr ""
+"Controla la calidad del audio. 16 = rápido pero menor calidad, 32 = mejor "
+"calidad pero más lento"
+
+#: prefs.js:190
 msgid "Speed"
 msgstr "Velocidad"
 
-#: prefs.js:189
-msgid "> 1.0 = faster speech, < 1.0 = slower speech"
-msgstr "> 1.0 = habla más rápida, < 1.0 = habla más lenta"
+#: prefs.js:191
+msgid ""
+"How fast the voice speaks. 1.0 = normal, higher = faster, lower = slower"
+msgstr ""
+"Qué tan rápido habla la voz. 1.0 = normal, mayor = más rápido, menor = más lento"
 
-#: prefs.js:204
+#: prefs.js:206
 msgid "Guidance Scale"
 msgstr "Escala de guía"
 
-#: prefs.js:205
-msgid "Classifier-free guidance scale"
-msgstr "Escala de guía libre de clasificador"
-
-#: prefs.js:225
-msgid "Python"
-msgstr "Python"
+#: prefs.js:207
+msgid ""
+"Controls how closely the voice follows instructions. Higher = more precise "
+"but less natural"
+msgstr ""
+"Controla qué tan fielmente la voz sigue las instrucciones. Mayor = más "
+"preciso pero menos natural"
 
 #: prefs.js:227
-msgid ""
-"Path to the Python binary with OmniVoice installed (virtualenv). Replace "
-"[USER] with your username."
-msgstr ""
-"Ruta al binario de Python con OmniVoice instalado (virtualenv). Reemplazar "
-"[USER] por tu nombre de usuario."
+msgid "OmniVoice Model"
+msgstr "Modelo OmniVoice"
 
-#: prefs.js:233
+#: prefs.js:229
+msgid ""
+"Location of the Python program that runs the voice model. Replace [USER] in "
+"the path with your system username."
+msgstr ""
+"Ubicación del programa Python que ejecuta el modelo de voz. Reemplaza "
+"[USER] en la ruta por tu nombre de usuario del sistema."
+
+#: prefs.js:235
 msgid "Python Path"
 msgstr "Ruta de Python"
 
-#: prefs.js:244
+#: prefs.js:238
+msgid ""
+"Full path to the Python executable inside the OmniVoice virtual environment"
+msgstr ""
+"Ruta completa al ejecutable de Python dentro del entorno virtual de OmniVoice"
+
+#: prefs.js:247
 msgid "Shortcut"
 msgstr "Atajo"
 
-#: prefs.js:250
+#: prefs.js:253
 msgid "Keyboard Shortcut"
 msgstr "Atajo de teclado"
 
-#: prefs.js:251
-msgid "Shortcut to read the selected text aloud"
-msgstr "Atajo para leer el texto seleccionado en voz alta"
+#: prefs.js:254
+msgid "Select any text on screen and press this shortcut to hear it read aloud"
+msgstr "Selecciona cualquier texto en pantalla y presiona este atajo para escucharlo en voz alta"
 
-#: prefs.js:257
+#: prefs.js:261
+msgid "Not configured"
+msgstr "No configurado"
+
+#: prefs.js:266
 msgid "TTS Shortcut"
 msgstr "Atajo TTS"
 
-#: prefs.js:259
-msgid "Not configured"
-msgstr "No configurado"
+#: prefs.js:267
+msgid ""
+"Press the keyboard icon to change the shortcut, or the clear icon to restore "
+"the default"
+msgstr ""
+"Presiona el ícono de teclado para cambiar el atajo, o el ícono de limpiar "
+"para restaurar el valor por defecto"
+
+#: prefs.js:274
+msgid "Set shortcut"
+msgstr "Configurar atajo"
+
+#: prefs.js:278
+msgid "Set TTS Shortcut"
+msgstr "Configurar atajo TTS"
+
+#: prefs.js:279
+msgid "Press the desired key combination…"
+msgstr "Presiona la combinación de teclas deseada…"
+
+#: prefs.js:283
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: prefs.js:310
+msgid "Reset to default"
+msgstr "Restablecer al valor por defecto"
+
+#~ msgid "Choose how the voice is generated"
+#~ msgstr "Elige cómo se genera la voz"
+
+#~ msgid ""
+#~ "Clone uses a reference audio, Design uses a text description, Auto lets "
+#~ "the model decide"
+#~ msgstr ""
+#~ "Clonar usa un audio de referencia, Diseñar usa una descripción de texto, "
+#~ "Auto deja que el modelo decida"
+
+#~ msgid ""
+#~ "Use a reference audio to clone a voice. Leave the reference text empty "
+#~ "for auto-transcription (Whisper)."
+#~ msgstr ""
+#~ "Usa un audio de referencia para clonar una voz. Deja el texto de "
+#~ "referencia vacío para auto-transcripción (Whisper)."
+
+#~ msgid "Describe the desired voice characteristics"
+#~ msgstr "Describe las características de voz deseadas"
+
+#~ msgid "Advanced parameters for audio generation"
+#~ msgstr "Parámetros avanzados para la generación de audio"
+
+#~ msgid "Diffusion Steps"
+#~ msgstr "Pasos de difusión"
+
+#~ msgid "Higher = better quality but slower (16 for fast, 32 for quality)"
+#~ msgstr ""
+#~ "Mayor = mejor calidad pero más lento (16 para rápido, 32 para calidad)"
+
+#~ msgid "> 1.0 = faster speech, < 1.0 = slower speech"
+#~ msgstr "> 1.0 = habla más rápida, < 1.0 = habla más lenta"
+
+#~ msgid "Classifier-free guidance scale"
+#~ msgstr "Escala de guía libre de clasificador"
+
+#~ msgid "Python"
+#~ msgstr "Python"
+
+#~ msgid ""
+#~ "Path to the Python binary with OmniVoice installed (virtualenv). Replace "
+#~ "[USER] with your username."
+#~ msgstr ""
+#~ "Ruta al binario de Python con OmniVoice instalado (virtualenv). "
+#~ "Reemplazar [USER] por tu nombre de usuario."
+
+#~ msgid "Shortcut to read the selected text aloud"
+#~ msgstr "Atajo para leer el texto seleccionado en voz alta"
+
+#~ msgid "Click the button to set a new shortcut"
+#~ msgstr "Haz clic en el botón para configurar un nuevo atajo"

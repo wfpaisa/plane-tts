@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 18:20-0500\n"
+"POT-Creation-Date: 2026-05-31 18:40-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: extension.js:38
@@ -37,44 +37,49 @@ msgstr ""
 msgid "[Plane TTS] No text selected"
 msgstr ""
 
-#: prefs.js:20
+#: prefs.js:21
 msgid "Voice"
 msgstr ""
 
-#: prefs.js:27
+#: prefs.js:28
 msgid "Voice Mode"
 msgstr ""
 
-#: prefs.js:28
-msgid "Choose how the voice is generated"
+#: prefs.js:29
+msgid "Select the method used to generate the voice that will read your text"
 msgstr ""
 
-#: prefs.js:33
+#: prefs.js:34
 msgid "Mode"
 msgstr ""
 
-#: prefs.js:35
+#: prefs.js:36
 msgid ""
-"Clone uses a reference audio, Design uses a text description, Auto lets the "
-"model decide"
+"Clone: imitates a voice from an audio sample. Design: creates a voice from a "
+"written description. Auto: the system chooses automatically"
 msgstr ""
 
-#: prefs.js:54
+#: prefs.js:55
 msgid "Voice Cloning"
 msgstr ""
 
-#: prefs.js:56
+#: prefs.js:57
 msgid ""
-"Use a reference audio to clone a voice. Leave the reference text empty for "
-"auto-transcription (Whisper)."
+"Upload a short audio sample of the voice you want to imitate. Optionally "
+"write what is said in the audio, or leave it empty to detect it "
+"automatically."
 msgstr ""
 
-#: prefs.js:63
+#: prefs.js:64
 msgid "Reference Audio"
 msgstr ""
 
-#: prefs.js:66 prefs.js:113
+#: prefs.js:65 prefs.js:113
 msgid "No file selected"
+msgstr ""
+
+#: prefs.js:66
+msgid "A short audio file (WAV, MP3, FLAC) with the voice you want to clone"
 msgstr ""
 
 #: prefs.js:70
@@ -97,84 +102,135 @@ msgstr ""
 msgid "Reference Text (optional)"
 msgstr ""
 
-#: prefs.js:133
-msgid "Voice Design"
+#: prefs.js:125
+msgid ""
+"Write exactly what is said in the reference audio. If left empty, it will be "
+"detected automatically"
 msgstr ""
 
 #: prefs.js:134
-msgid "Describe the desired voice characteristics"
+msgid "Voice Design"
 msgstr ""
 
-#: prefs.js:139
+#: prefs.js:135
+msgid ""
+"Create a custom voice by describing how you want it to sound, without "
+"needing an audio sample"
+msgstr ""
+
+#: prefs.js:140
 msgid "Voice Description"
 msgstr ""
 
-#: prefs.js:153
+#: prefs.js:143
+msgid ""
+"Example: 'female, calm tone, neutral accent' or 'male, deep voice, British "
+"accent'"
+msgstr ""
+
+#: prefs.js:155
 msgid "Parameters"
 msgstr ""
 
-#: prefs.js:159
+#: prefs.js:161
 msgid "Generation Parameters"
 msgstr ""
 
-#: prefs.js:160
-msgid "Advanced parameters for audio generation"
-msgstr ""
-
-#: prefs.js:166
-msgid "Diffusion Steps"
+#: prefs.js:162
+msgid ""
+"Adjust these values to control the quality and speed of the generated audio"
 msgstr ""
 
 #: prefs.js:168
-msgid "Higher = better quality but slower (16 for fast, 32 for quality)"
+msgid "Quality"
 msgstr ""
 
-#: prefs.js:188
+#: prefs.js:170
+msgid ""
+"Controls audio quality. 16 = fast but lower quality, 32 = best quality but "
+"slower"
+msgstr ""
+
+#: prefs.js:190
 msgid "Speed"
 msgstr ""
 
-#: prefs.js:189
-msgid "> 1.0 = faster speech, < 1.0 = slower speech"
+#: prefs.js:191
+msgid ""
+"How fast the voice speaks. 1.0 = normal, higher = faster, lower = slower"
 msgstr ""
 
-#: prefs.js:204
+#: prefs.js:206
 msgid "Guidance Scale"
 msgstr ""
 
-#: prefs.js:205
-msgid "Classifier-free guidance scale"
-msgstr ""
-
-#: prefs.js:225
-msgid "Python"
+#: prefs.js:207
+msgid ""
+"Controls how closely the voice follows instructions. Higher = more precise "
+"but less natural"
 msgstr ""
 
 #: prefs.js:227
-msgid ""
-"Path to the Python binary with OmniVoice installed (virtualenv). Replace "
-"[USER] with your username."
+msgid "OmniVoice Model"
 msgstr ""
 
-#: prefs.js:233
+#: prefs.js:229
+msgid ""
+"Location of the Python program that runs the voice model. Replace [USER] in "
+"the path with your system username."
+msgstr ""
+
+#: prefs.js:235
 msgid "Python Path"
 msgstr ""
 
-#: prefs.js:244
+#: prefs.js:238
+msgid ""
+"Full path to the Python executable inside the OmniVoice virtual environment"
+msgstr ""
+
+#: prefs.js:247
 msgid "Shortcut"
 msgstr ""
 
-#: prefs.js:250
+#: prefs.js:253
 msgid "Keyboard Shortcut"
 msgstr ""
 
-#: prefs.js:251
-msgid "Shortcut to read the selected text aloud"
+#: prefs.js:254
+msgid "Select any text on screen and press this shortcut to hear it read aloud"
 msgstr ""
 
-#: prefs.js:257
+#: prefs.js:261
+msgid "Not configured"
+msgstr ""
+
+#: prefs.js:266
 msgid "TTS Shortcut"
 msgstr ""
 
-#: prefs.js:259
-msgid "Not configured"
+#: prefs.js:267
+msgid ""
+"Press the keyboard icon to change the shortcut, or the clear icon to restore "
+"the default"
+msgstr ""
+
+#: prefs.js:274
+msgid "Set shortcut"
+msgstr ""
+
+#: prefs.js:278
+msgid "Set TTS Shortcut"
+msgstr ""
+
+#: prefs.js:279
+msgid "Press the desired key combination…"
+msgstr ""
+
+#: prefs.js:283
+msgid "Cancel"
+msgstr ""
+
+#: prefs.js:310
+msgid "Reset to default"
 msgstr ""

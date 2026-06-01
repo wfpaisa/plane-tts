@@ -1,3 +1,4 @@
+import Gdk from "gi://Gdk?version=4.0";
 import Gtk from "gi://Gtk?version=4.0";
 import Adw from "gi://Adw";
 import Gio from "gi://Gio";
@@ -25,14 +26,16 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     // Mode selection group
     const modeGroup = new Adw.PreferencesGroup({
       title: _("Voice Mode"),
-      description: _("Choose how the voice is generated"),
+      description: _(
+        "Select the method used to generate the voice that will read your text",
+      ),
     });
     modePage.add(modeGroup);
 
     const modeRow = new Adw.ComboRow({
       title: _("Mode"),
       subtitle: _(
-        "Clone uses a reference audio, Design uses a text description, Auto lets the model decide",
+        "Clone: imitates a voice from an audio sample. Design: creates a voice from a written description. Auto: the system chooses automatically",
       ),
       model: Gtk.StringList.new(["clone", "design", "auto"]),
     });
@@ -53,7 +56,7 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     const cloneGroup = new Adw.PreferencesGroup({
       title: _("Voice Cloning"),
       description: _(
-        "Use a reference audio to clone a voice. Leave the reference text empty for auto-transcription (Whisper).",
+        "Upload a short audio sample of the voice you want to imitate. Optionally write what is said in the audio, or leave it empty to detect it automatically.",
       ),
     });
     modePage.add(cloneGroup);
@@ -62,6 +65,9 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     const refAudioRow = new Adw.ActionRow({
       title: _("Reference Audio"),
       subtitle: settings.get_string("ref-audio-path") || _("No file selected"),
+      tooltip_text: _(
+        "A short audio file (WAV, MP3, FLAC) with the voice you want to clone",
+      ),
     });
 
     const chooseButton = new Gtk.Button({
@@ -120,6 +126,9 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
       title: _("Reference Text (optional)"),
       text: settings.get_string("ref-text"),
       show_apply_button: true,
+      tooltip_text: _(
+        "Write exactly what is said in the reference audio. If left empty, it will be detected automatically",
+      ),
     });
     refTextRow.connect("apply", () => {
       settings.set_string("ref-text", refTextRow.get_text());
@@ -129,7 +138,9 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     // ── Design settings group ──
     const designGroup = new Adw.PreferencesGroup({
       title: _("Voice Design"),
-      description: _("Describe the desired voice characteristics"),
+      description: _(
+        "Create a custom voice by describing how you want it to sound, without needing an audio sample",
+      ),
     });
     modePage.add(designGroup);
 
@@ -137,6 +148,9 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
       title: _("Voice Description"),
       text: settings.get_string("instruct-text"),
       show_apply_button: true,
+      tooltip_text: _(
+        "Example: 'female, calm tone, neutral accent' or 'male, deep voice, British accent'",
+      ),
     });
     instructRow.connect("apply", () => {
       settings.set_string("instruct-text", instructRow.get_text());
@@ -155,21 +169,23 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     const genGroup = new Adw.PreferencesGroup({
       title: _("Generation Parameters"),
-      description: _("Advanced parameters for audio generation"),
+      description: _(
+        "Adjust these values to control the quality and speed of the generated audio",
+      ),
     });
     paramsPage.add(genGroup);
 
     // Num steps
     const numStepRow = new Adw.SpinRow({
-      title: _("Diffusion Steps"),
+      title: _("Quality"),
       subtitle: _(
-        "Higher = better quality but slower (16 for fast, 32 for quality)",
+        "Controls audio quality. 16 = fast but lower quality, 32 = best quality but slower",
       ),
       adjustment: new Gtk.Adjustment({
-        lower: 4,
-        upper: 128,
+        lower: 16,
+        upper: 32,
         step_increment: 1,
-        page_increment: 8,
+        page_increment: 4,
         value: settings.get_int("num-step"),
       }),
     });
@@ -184,7 +200,9 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     // Speed
     const speedRow = new Adw.SpinRow({
       title: _("Speed"),
-      subtitle: _("> 1.0 = faster speech, < 1.0 = slower speech"),
+      subtitle: _(
+        "How fast the voice speaks. 1.0 = normal, higher = faster, lower = slower",
+      ),
       digits: 2,
       adjustment: new Gtk.Adjustment({
         lower: 0.1,
@@ -200,7 +218,9 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     // Guidance scale
     const guidanceRow = new Adw.SpinRow({
       title: _("Guidance Scale"),
-      subtitle: _("Classifier-free guidance scale"),
+      subtitle: _(
+        "Controls how closely the voice follows instructions. Higher = more precise but less natural",
+      ),
       digits: 1,
       adjustment: new Gtk.Adjustment({
         lower: 0.0,
@@ -220,9 +240,9 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     // Python binary path
     const pythonGroup = new Adw.PreferencesGroup({
-      title: _("Python"),
+      title: _("OmniVoice Model"),
       description: _(
-        "Path to the Python binary with OmniVoice installed (virtualenv). Replace [USER] with your username.",
+        "Location of the Python program that runs the voice model. Replace [USER] in the path with your system username.",
       ),
     });
     paramsPage.add(pythonGroup);
@@ -231,6 +251,9 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
       title: _("Python Path"),
       text: settings.get_string("python-bin"),
       show_apply_button: true,
+      tooltip_text: _(
+        "Full path to the Python executable inside the OmniVoice virtual environment",
+      ),
     });
     pythonBinRow.connect("apply", () => {
       settings.set_string("python-bin", pythonBinRow.get_text());
@@ -246,16 +269,75 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
 
     const shortcutGroup = new Adw.PreferencesGroup({
       title: _("Keyboard Shortcut"),
-      description: _("Shortcut to read the selected text aloud"),
+      description: _(
+        "Select any text on screen and press this shortcut to hear it read aloud",
+      ),
     });
     shortcutPage.add(shortcutGroup);
 
     const currentShortcut = settings.get_strv("tts-shortcut");
+    const shortcutLabel = new Gtk.ShortcutLabel({
+      accelerator: currentShortcut.length > 0 ? currentShortcut[0] : "",
+      disabled_text: _("Not configured"),
+      valign: Gtk.Align.CENTER,
+    });
+
     const shortcutRow = new Adw.ActionRow({
       title: _("TTS Shortcut"),
-      subtitle:
-        currentShortcut.length > 0 ? currentShortcut[0] : _("Not configured"),
+      subtitle: _(
+        "Press the keyboard icon to change the shortcut, or the clear icon to restore the default",
+      ),
     });
+    shortcutRow.add_suffix(shortcutLabel);
+
+    const editButton = new Gtk.Button({
+      icon_name: "preferences-desktop-keyboard-shortcuts-symbolic",
+      valign: Gtk.Align.CENTER,
+      tooltip_text: _("Set shortcut"),
+    });
+    editButton.connect("clicked", () => {
+      const dialog = new Adw.MessageDialog({
+        heading: _("Set TTS Shortcut"),
+        body: _("Press the desired key combination\u2026"),
+        transient_for: window,
+        modal: true,
+      });
+      dialog.add_response("cancel", _("Cancel"));
+
+      const keyController = new Gtk.EventControllerKey();
+      keyController.connect("key-pressed", (_ctrl, keyval, _keycode, state) => {
+        const mask = state & Gtk.accelerator_get_default_mod_mask();
+
+        if (keyval === Gdk.KEY_Escape && mask === 0) {
+          dialog.close();
+          return true;
+        }
+
+        if (!Gtk.accelerator_valid(keyval, mask)) return true;
+
+        const accel = Gtk.accelerator_name(keyval, mask);
+        settings.set_strv("tts-shortcut", [accel]);
+        shortcutLabel.set_accelerator(accel);
+        dialog.close();
+        return true;
+      });
+      dialog.add_controller(keyController);
+      dialog.present();
+    });
+    shortcutRow.add_suffix(editButton);
+
+    const resetButton = new Gtk.Button({
+      icon_name: "edit-clear-symbolic",
+      valign: Gtk.Align.CENTER,
+      tooltip_text: _("Reset to default"),
+    });
+    resetButton.connect("clicked", () => {
+      settings.reset("tts-shortcut");
+      const def = settings.get_strv("tts-shortcut");
+      shortcutLabel.set_accelerator(def.length > 0 ? def[0] : "");
+    });
+    shortcutRow.add_suffix(resetButton);
+
     shortcutGroup.add(shortcutRow);
   }
 
