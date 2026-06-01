@@ -23,6 +23,7 @@ export default class PlaneTTSExtension extends Extension {
     this._cancellable = null;
     this._ttsProcess = null;
     this._playProcess = null;
+    this._errorTimeoutId = null;
 
     // Panel indicator
     this._indicator = new PanelMenu.Button(0.0, "Plane TTS", false);
@@ -69,11 +70,17 @@ export default class PlaneTTSExtension extends Extension {
   disable() {
     this._stopAll();
 
+    if (this._errorTimeoutId) {
+      GLib.Source.remove(this._errorTimeoutId);
+      this._errorTimeoutId = null;
+    }
+
     Main.wm.removeKeybinding("tts-shortcut");
 
+    this._icon?.destroy();
+    this._icon = null;
     this._indicator?.destroy();
     this._indicator = null;
-    this._icon = null;
     this._settings = null;
   }
 
@@ -120,10 +127,15 @@ export default class PlaneTTSExtension extends Extension {
       case "error":
         this._indicator.add_style_class_name("plane-tts-error");
         this._icon.icon_name = "dialog-error-symbolic";
-        GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
-          this._setStatus("normal");
-          return GLib.SOURCE_REMOVE;
-        });
+        this._errorTimeoutId = GLib.timeout_add_seconds(
+          GLib.PRIORITY_DEFAULT,
+          3,
+          () => {
+            this._errorTimeoutId = null;
+            this._setStatus("normal");
+            return GLib.SOURCE_REMOVE;
+          },
+        );
         break;
       default:
         this._icon.icon_name = "audio-speakers-symbolic";
