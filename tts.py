@@ -124,56 +124,51 @@ def main():
         sys.exit(1)
 
     try:
-        from omnivoice import OmniVoice
+        from omnivoice import OmniVoice, OmniVoiceGenerationConfig
+        import numpy as np
         import soundfile as sf
         import torch
 
-        # Carga el modelo OmniVoice en GPU con precisión float16.
-        # Se usa from_pretrained() que descarga/cachea el modelo automáticamente.
-        # En la primera ejecución tarda más; las siguientes usan el cache local.
         model = OmniVoice.from_pretrained(
             "k2-fsa/OmniVoice",
             device_map="cuda:0",
             dtype=torch.float16,
         )
 
-        # Construye los kwargs de generación según el modo seleccionado.
-        # Se usa un diccionario dinámico porque cada modo requiere parámetros
-        # diferentes: clone necesita ref_audio/ref_text, design necesita instruct,
-        # y auto no necesita parámetros extra.
+        gen_config = OmniVoiceGenerationConfig(
+            num_step=int(args.num_step),
+            guidance_scale=float(args.guidance_scale),
+            denoise=bool(args.denoise),
+            preprocess_prompt=bool(args.preprocess_prompt),
+            postprocess_output=bool(args.postprocess_output),
+        )
+
+        lang = args.language if args.language != "auto" else None
+
         gen_kwargs = {
             "text": text,
-            "num_step": args.num_step,
-            "speed": args.speed,
-            "guidance_scale": args.guidance_scale,
+            "language": lang,
+            "generation_config": gen_config,
         }
 
+        if args.speed != 1.0:
+            gen_kwargs["speed"] = args.speed
         if args.duration > 0:
             gen_kwargs["duration"] = args.duration
 
-        if args.language != "auto":
-            gen_kwargs["language"] = args.language
-
-        gen_kwargs["denoise"] = args.denoise
-        gen_kwargs["preprocess_prompt"] = args.preprocess_prompt
-        gen_kwargs["postprocess_output"] = args.postprocess_output
-
         if args.mode == "clone":
-            gen_kwargs["ref_audio"] = args.ref_audio
-            if args.ref_text:
-                gen_kwargs["ref_text"] = args.ref_text
-        elif args.mode == "design":
-            if args.instruct:
-                gen_kwargs["instruct"] = args.instruct
-        # auto mode: no extra args needed
+            gen_kwargs["voice_clone_prompt"] = model.create_voice_clone_prompt(
+                ref_audio=args.ref_audio,
+                ref_text=args.ref_text or None,
+            )
 
-        # Genera el audio. model.generate() retorna una lista de np.ndarray
-        # con shape (T,) a 24 kHz. Se toma el primer elemento [0].
+        if args.instruct:
+            gen_kwargs["instruct"] = args.instruct.strip()
+
         audio = model.generate(**gen_kwargs)
 
-        # Guarda el audio como WAV a 24kHz y devuelve la ruta por stdout.
-        # La extensión de GNOME Shell lee stdout para saber dónde está el archivo.
-        sf.write(args.output, audio[0], 24000)
+        waveform = (audio[0] * 32767).astype(np.int16)
+        sf.write(args.output, waveform, model.sampling_rate)
         print(args.output, end="")
 
     except Exception as e:

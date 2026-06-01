@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: plane-tts@wfelipe.com\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 19:25-0500\n"
+"POT-Creation-Date: 2026-05-31 20:49-0500\n"
 "PO-Revision-Date: 2026-05-31 18:20-0500\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
@@ -78,7 +78,7 @@ msgstr ""
 msgid "Reference Audio"
 msgstr "Audio de referencia"
 
-#: prefs.js:67 prefs.js:117
+#: prefs.js:67 prefs.js:117 prefs.js:432
 msgid "No file selected"
 msgstr "Ningún archivo seleccionado"
 
@@ -139,44 +139,44 @@ msgstr "Activa para escribir tu propia descripción en vez de usar selectores"
 msgid "Custom description"
 msgstr "Descripción personalizada"
 
-#: prefs.js:181
+#: prefs.js:203
 msgid "Preview"
 msgstr "Vista previa"
 
-#: prefs.js:199
+#: prefs.js:222
 msgid "(empty — model will choose defaults)"
 msgstr "(vacío — el modelo elegirá valores por defecto)"
 
-#: prefs.js:215
+#: prefs.js:239
 msgid "Gender"
 msgstr "Género"
 
-#: prefs.js:216 prefs.js:225 prefs.js:234 prefs.js:243 prefs.js:252
-#: prefs.js:295
+#: prefs.js:241 prefs.js:252 prefs.js:263 prefs.js:274 prefs.js:285
+#: prefs.js:354
 msgid "Auto"
 msgstr "Auto"
 
-#: prefs.js:224
+#: prefs.js:250
 msgid "Age"
 msgstr "Edad"
 
-#: prefs.js:233
+#: prefs.js:261
 msgid "Pitch"
 msgstr "Tono"
 
-#: prefs.js:242
+#: prefs.js:272
 msgid "Style"
 msgstr "Estilo"
 
-#: prefs.js:251
+#: prefs.js:283
 msgid "English Accent"
 msgstr "Acento inglés"
 
-#: prefs.js:273
+#: prefs.js:314
 msgid "Tips"
 msgstr "Consejos"
 
-#: prefs.js:275
+#: prefs.js:316
 msgid ""
 "Combine freely across categories. Leave attributes as Auto to let the model "
 "decide. English accents only apply to English speech."
@@ -184,163 +184,175 @@ msgstr ""
 "Combina libremente entre categorías. Deja los atributos en Auto para que el "
 "modelo decida. Los acentos ingleses solo aplican a voz en inglés."
 
-#: prefs.js:285 prefs.js:304
+#: prefs.js:326 prefs.js:377
 msgid "Language"
 msgstr "Idioma"
 
-#: prefs.js:295
+#: prefs.js:355
 msgid "English (en)"
 msgstr "Inglés (en)"
 
-#: prefs.js:295
+#: prefs.js:356
 msgid "Chinese (zh)"
 msgstr "Chino (zh)"
 
-#: prefs.js:295
+#: prefs.js:357
 msgid "Japanese (ja)"
 msgstr "Japonés (ja)"
 
-#: prefs.js:296
+#: prefs.js:358
 msgid "Spanish (es)"
 msgstr "Español (es)"
 
-#: prefs.js:296
+#: prefs.js:359
 msgid "French (fr)"
 msgstr "Francés (fr)"
 
-#: prefs.js:296
+#: prefs.js:360
 msgid "German (de)"
 msgstr "Alemán (de)"
 
-#: prefs.js:296
+#: prefs.js:361
 msgid "Russian (ru)"
 msgstr "Ruso (ru)"
 
-#: prefs.js:297
+#: prefs.js:362
 msgid "Portuguese (pt)"
 msgstr "Portugués (pt)"
 
-#: prefs.js:297
+#: prefs.js:363
 msgid "Cantonese (yue)"
 msgstr "Cantonés (yue)"
 
-#: prefs.js:297
+#: prefs.js:364
 msgid "Thai (th)"
 msgstr "Tailandés (th)"
 
-#: prefs.js:298
+#: prefs.js:365
 msgid "Italian (it)"
 msgstr "Italiano (it)"
 
-#: prefs.js:298
+#: prefs.js:366
 msgid "Korean (ko)"
 msgstr "Coreano (ko)"
 
-#: prefs.js:298
+#: prefs.js:367
 msgid "Vietnamese (vi)"
 msgstr "Vietnamita (vi)"
 
-#: prefs.js:299
+#: prefs.js:368
 msgid "Indonesian (id)"
 msgstr "Indonesio (id)"
 
-#: prefs.js:299
+#: prefs.js:369
 msgid "Norwegian (no)"
 msgstr "Noruego (no)"
 
-#: prefs.js:299
+#: prefs.js:370
 msgid "Catalan (ca)"
 msgstr "Catalán (ca)"
 
-#: prefs.js:300
+#: prefs.js:371
 msgid "Croatian (hr)"
 msgstr "Croata (hr)"
 
-#: prefs.js:300
+#: prefs.js:372
 msgid "Lithuanian (lt)"
 msgstr "Lituano (lt)"
 
-#: prefs.js:300
+#: prefs.js:373
 msgid "Slovak (sk)"
 msgstr "Eslovaco (sk)"
 
-#: prefs.js:301
+#: prefs.js:374
 msgid "Swedish (sv)"
 msgstr "Sueco (sv)"
 
-#: prefs.js:305
+#: prefs.js:378
 msgid "Keep as Auto to auto-detect the language"
 msgstr "Dejar en Auto para detectar el idioma automáticamente"
 
-#: prefs.js:320
+#: prefs.js:393
 msgid "Parameters"
 msgstr "Parámetros"
 
-#: prefs.js:326
+#: prefs.js:403
+msgid "Reset All Settings"
+msgstr "Restablecer todos los ajustes"
+
+#: prefs.js:404
+msgid "Restore all parameters to their default values"
+msgstr "Restaurar todos los parámetros a sus valores por defecto"
+
+#: prefs.js:407
+msgid "Reset"
+msgstr "Restablecer"
+
+#: prefs.js:448
 msgid "Generation Parameters"
 msgstr "Parámetros de generación"
 
-#: prefs.js:328
+#: prefs.js:450
 msgid ""
 "Adjust these values to control the quality and speed of the generated audio"
 msgstr ""
 "Ajusta estos valores para controlar la calidad y velocidad del audio generado"
 
-#: prefs.js:335
+#: prefs.js:457
 msgid "Speed"
 msgstr "Velocidad"
 
-#: prefs.js:337
+#: prefs.js:459
 msgid "1.0 = normal. >1 faster, <1 slower. Ignored if Duration is set."
 msgstr ""
 "1.0 = normal. >1 más rápido, <1 más lento. Se ignora si Duración está "
 "configurada."
 
-#: prefs.js:353
+#: prefs.js:475
 msgid "Duration (seconds)"
 msgstr "Duración (segundos)"
 
-#: prefs.js:357
+#: prefs.js:479
 msgid ""
 "Leave as 0 to use speed. Set a fixed duration in seconds to override speed."
 msgstr ""
 "Dejar en 0 para usar velocidad. Configurar una duración fija en segundos "
 "para anular la velocidad."
 
-#: prefs.js:369
+#: prefs.js:491
 msgid "Inference Steps"
 msgstr "Pasos de inferencia"
 
-#: prefs.js:370
+#: prefs.js:492
 msgid "Default: 32. Lower = faster, higher = better quality."
 msgstr "Por defecto: 32. Menor = más rápido, mayor = mejor calidad."
 
-#: prefs.js:389
+#: prefs.js:511
 msgid "Guidance Scale (CFG)"
 msgstr "Escala de guía (CFG)"
 
-#: prefs.js:390
+#: prefs.js:512
 msgid "Default: 2.0."
 msgstr "Por defecto: 2.0."
 
-#: prefs.js:410
+#: prefs.js:532
 msgid "Processing"
 msgstr "Procesamiento"
 
-#: prefs.js:416
+#: prefs.js:538
 msgid "Denoise"
 msgstr "Eliminar ruido"
 
-#: prefs.js:417
+#: prefs.js:539
 msgid "Remove noise from generated audio. Disable for raw output."
 msgstr ""
 "Elimina el ruido del audio generado. Desactivar para salida sin procesar."
 
-#: prefs.js:429
+#: prefs.js:551
 msgid "Preprocess Prompt"
 msgstr "Preprocesar prompt"
 
-#: prefs.js:431
+#: prefs.js:553
 msgid ""
 "Apply silence removal and trimming to reference audio, add punctuation to "
 "reference text."
@@ -348,19 +360,23 @@ msgstr ""
 "Aplica eliminación de silencios y recorte al audio de referencia, agrega "
 "puntuación al texto de referencia."
 
-#: prefs.js:444
+#: prefs.js:566
 msgid "Postprocess Output"
 msgstr "Posprocesar salida"
 
-#: prefs.js:445
+#: prefs.js:567
 msgid "Remove long silences from generated audio."
 msgstr "Elimina silencios largos del audio generado."
 
-#: prefs.js:457
+#: prefs.js:579
+msgid "Model"
+msgstr "Modelo"
+
+#: prefs.js:585
 msgid "OmniVoice Model"
 msgstr "Modelo OmniVoice"
 
-#: prefs.js:459
+#: prefs.js:587
 msgid ""
 "Location of the Python program that runs the voice model. Replace [USER] in "
 "the path with your system username."
@@ -368,39 +384,59 @@ msgstr ""
 "Ubicación del programa Python que ejecuta el modelo de voz. Reemplaza [USER] "
 "en la ruta por tu nombre de usuario del sistema."
 
-#: prefs.js:465
+#: prefs.js:593
 msgid "Python Path"
 msgstr "Ruta de Python"
 
-#: prefs.js:469
+#: prefs.js:597
 msgid ""
 "Full path to the Python executable inside the OmniVoice virtual environment"
 msgstr ""
 "Ruta completa al ejecutable de Python dentro del entorno virtual de OmniVoice"
 
-#: prefs.js:479
+#: prefs.js:606
+msgid "Installation"
+msgstr "Instalación"
+
+#: prefs.js:608
+msgid "To install OmniVoice, run these commands in a terminal:"
+msgstr "Para instalar OmniVoice, ejecuta estos comandos en una terminal:"
+
+#: prefs.js:614
+msgid "Commands"
+msgstr "Comandos"
+
+#: prefs.js:621
+msgid "Documentation"
+msgstr "Documentación"
+
+#: prefs.js:626
+msgid "Repository"
+msgstr "Repositorio"
+
+#: prefs.js:634
 msgid "Shortcut"
 msgstr "Atajo"
 
-#: prefs.js:485
+#: prefs.js:640
 msgid "Keyboard Shortcut"
 msgstr "Atajo de teclado"
 
-#: prefs.js:487
+#: prefs.js:642
 msgid "Select any text on screen and press this shortcut to hear it read aloud"
 msgstr ""
 "Selecciona cualquier texto en pantalla y presiona este atajo para escucharlo "
 "en voz alta"
 
-#: prefs.js:495
+#: prefs.js:650
 msgid "Not configured"
 msgstr "No configurado"
 
-#: prefs.js:500
+#: prefs.js:655
 msgid "TTS Shortcut"
 msgstr "Atajo TTS"
 
-#: prefs.js:502
+#: prefs.js:657
 msgid ""
 "Press the keyboard icon to change the shortcut, or the clear icon to restore "
 "the default"
@@ -408,25 +444,40 @@ msgstr ""
 "Presiona el ícono de teclado para cambiar el atajo, o el ícono de limpiar "
 "para restaurar el valor por defecto"
 
-#: prefs.js:510
+#: prefs.js:665
 msgid "Set shortcut"
 msgstr "Configurar atajo"
 
-#: prefs.js:514
+#: prefs.js:669
 msgid "Set TTS Shortcut"
 msgstr "Configurar atajo TTS"
 
-#: prefs.js:515
+#: prefs.js:670
 msgid "Press the desired key combination…"
 msgstr "Presiona la combinación de teclas deseada…"
 
-#: prefs.js:519
+#: prefs.js:674
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: prefs.js:546
+#: prefs.js:701
 msgid "Reset to default"
 msgstr "Restablecer al valor por defecto"
+
+#~ msgid ""
+#~ "To install OmniVoice, run these commands in a terminal:\n"
+#~ "\n"
+#~ "git clone https://github.com/k2-fsa/OmniVoice.git\n"
+#~ "cd OmniVoice\n"
+#~ "uv sync\n"
+#~ "uv pip install -e ."
+#~ msgstr ""
+#~ "Para instalar OmniVoice, ejecuta estos comandos en una terminal:\n"
+#~ "\n"
+#~ "git clone https://github.com/k2-fsa/OmniVoice.git\n"
+#~ "cd OmniVoice\n"
+#~ "uv sync\n"
+#~ "uv pip install -e ."
 
 #~ msgid ""
 #~ "Create a custom voice by describing how you want it to sound, without "

@@ -395,6 +395,55 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     });
     window.add(paramsPage);
 
+    // ── Reset group (top) ──
+    const resetGroup = new Adw.PreferencesGroup();
+    paramsPage.add(resetGroup);
+
+    const resetRow = new Adw.ActionRow({
+      title: _("Reset All Settings"),
+      subtitle: _("Restore all parameters to their default values"),
+    });
+    const resetAllButton = new Gtk.Button({
+      label: _("Reset"),
+      valign: Gtk.Align.CENTER,
+      css_classes: ["destructive-action"],
+    });
+    resetAllButton.connect("clicked", () => {
+      const keys = [
+        "voice-mode",
+        "ref-audio-path",
+        "ref-text",
+        "instruct-text",
+        "language",
+        "num-step",
+        "speed",
+        "duration",
+        "guidance-scale",
+        "denoise",
+        "preprocess-prompt",
+        "postprocess-output",
+        "tts-shortcut",
+      ];
+      keys.forEach((k) => settings.reset(k));
+
+      // Refresh UI widgets that are not bound via settings.bind
+      modeRow.set_selected(0);
+      langRow.set_selected(0);
+      refAudioRow.set_subtitle(_("No file selected"));
+      refTextRow.set_text("");
+      durationRow.set_text("0");
+      freeformRow.set_active(false);
+      freeformEntry.set_text("");
+      [genderRow, ageRow, pitchRow, styleRow, accentRow].forEach((r) =>
+        r.set_selected(0),
+      );
+      buildPreview();
+      const def = settings.get_strv("tts-shortcut");
+      shortcutLabel.set_accelerator(def.length > 0 ? def[0] : "");
+    });
+    resetRow.add_suffix(resetAllButton);
+    resetGroup.add(resetRow);
+
     const genGroup = new Adw.PreferencesGroup({
       title: _("Generation Parameters"),
       description: _(
@@ -525,14 +574,20 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     );
     procGroup.add(postprocessRow);
 
-    // Python binary path
+    // ── Model Page ──
+    const modelPage = new Adw.PreferencesPage({
+      title: _("Model"),
+      icon_name: "application-x-executable-symbolic",
+    });
+    window.add(modelPage);
+
     const pythonGroup = new Adw.PreferencesGroup({
       title: _("OmniVoice Model"),
       description: _(
         "Location of the Python program that runs the voice model. Replace [USER] in the path with your system username.",
       ),
     });
-    paramsPage.add(pythonGroup);
+    modelPage.add(pythonGroup);
 
     const pythonBinRow = new Adw.EntryRow({
       title: _("Python Path"),
@@ -546,6 +601,31 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
       settings.set_string("python-bin", pythonBinRow.get_text());
     });
     pythonGroup.add(pythonBinRow);
+
+    const installGroup = new Adw.PreferencesGroup({
+      title: _("Installation"),
+      description: _("To install OmniVoice, run these commands in a terminal:"),
+    });
+    modelPage.add(installGroup);
+
+    const installRow = new Adw.EntryRow({
+      title: _("Commands"),
+      text: "git clone https://github.com/k2-fsa/OmniVoice.git && cd OmniVoice && uv sync && uv pip install -e .",
+      editable: false,
+    });
+    installGroup.add(installRow);
+
+    const docsGroup = new Adw.PreferencesGroup({
+      title: _("Documentation"),
+    });
+    modelPage.add(docsGroup);
+
+    const docsRow = new Adw.EntryRow({
+      title: _("Repository"),
+      text: "https://github.com/k2-fsa/OmniVoice/",
+      editable: false,
+    });
+    docsGroup.add(docsRow);
 
     // ── Shortcut Page ──
     const shortcutPage = new Adw.PreferencesPage({

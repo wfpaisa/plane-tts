@@ -279,14 +279,15 @@ export default class PlaneTTSExtension extends Extension {
     if (!preprocessPrompt) argv.push("--no-preprocess-prompt");
     if (!postprocessOutput) argv.push("--no-postprocess-output");
 
+    // instruct is sent in any mode (clone can also receive instruct)
+    const instruct = this._settings.get_string("instruct-text");
+    if (instruct) argv.push("--instruct", instruct);
+
     if (mode === "clone") {
       const refAudio = this._settings.get_string("ref-audio-path");
       const refText = this._settings.get_string("ref-text");
       if (refAudio) argv.push("--ref-audio", refAudio);
       if (refText) argv.push("--ref-text", refText);
-    } else if (mode === "design") {
-      const instruct = this._settings.get_string("instruct-text");
-      if (instruct) argv.push("--instruct", instruct);
     }
 
     return argv;
