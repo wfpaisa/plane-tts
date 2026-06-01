@@ -48,7 +48,7 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     modeRow.connect("notify::selected", () => {
       const selected = modes[modeRow.get_selected()];
       settings.set_string("voice-mode", selected);
-      this._updateVisibility(cloneGroup, designGroup, selected);
+      this._updateVisibility(cloneGroup, designGroup, tipsGroup, selected);
     });
     modeGroup.add(modeRow);
 
@@ -139,23 +139,187 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     const designGroup = new Adw.PreferencesGroup({
       title: _("Voice Design"),
       description: _(
-        "Create a custom voice by describing how you want it to sound, without needing an audio sample",
+        "Build a voice description by selecting attributes below. The preview shows what will be sent to the model.",
       ),
     });
     modePage.add(designGroup);
 
-    const instructRow = new Adw.EntryRow({
-      title: _("Instruct (optional)"),
-      text: settings.get_string("instruct-text"),
-      show_apply_button: true,
-      tooltip_text: _(
-        "Example: 'female, calm tone, neutral accent' or 'male, deep voice, British accent'",
+    // Freeform toggle
+    const freeformRow = new Adw.SwitchRow({
+      title: _("Freeform mode"),
+      subtitle: _(
+        "Enable to type your own description instead of using selectors",
       ),
     });
-    instructRow.connect("apply", () => {
-      settings.set_string("instruct-text", instructRow.get_text());
+    designGroup.add(freeformRow);
+
+    // Freeform entry (hidden by default)
+    const freeformEntry = new Adw.EntryRow({
+      title: _("Custom description"),
+      text: settings.get_string("instruct-text"),
+      show_apply_button: true,
+      visible: false,
     });
-    designGroup.add(instructRow);
+    freeformEntry.connect("apply", () => {
+      settings.set_string("instruct-text", freeformEntry.get_text());
+    });
+    designGroup.add(freeformEntry);
+
+    // Selector data
+    const genderOpts = ["auto", "male", "female"];
+    const ageOpts = [
+      "auto",
+      "child",
+      "teenager",
+      "young adult",
+      "middle-aged",
+      "elderly",
+    ];
+    const pitchOpts = [
+      "auto",
+      "very low pitch",
+      "low pitch",
+      "moderate pitch",
+      "high pitch",
+      "very high pitch",
+    ];
+    const styleOpts = ["auto", "whisper"];
+    const accentOpts = [
+      "auto",
+      "american accent",
+      "british accent",
+      "australian accent",
+      "canadian accent",
+      "indian accent",
+      "chinese accent",
+      "korean accent",
+      "japanese accent",
+      "portuguese accent",
+      "russian accent",
+    ];
+
+    // Preview row
+    const previewRow = new Adw.ActionRow({
+      title: _("Preview"),
+      subtitle: "",
+      css_classes: ["property"],
+    });
+
+    const buildPreview = () => {
+      const parts = [];
+      const g = genderOpts[genderRow.get_selected()];
+      const a = ageOpts[ageRow.get_selected()];
+      const p = pitchOpts[pitchRow.get_selected()];
+      const s = styleOpts[styleRow.get_selected()];
+      const ac = accentOpts[accentRow.get_selected()];
+      if (g !== "auto") parts.push(g);
+      if (a !== "auto") parts.push(a);
+      if (p !== "auto") parts.push(p);
+      if (s !== "auto") parts.push(s);
+      if (ac !== "auto") parts.push(ac);
+      const result = parts.join(", ").toLowerCase();
+      previewRow.set_subtitle(
+        result || _("(empty — model will choose defaults)"),
+      );
+      settings.set_string("instruct-text", result);
+    };
+
+    // Parse current instruct-text to set initial selector values
+    const parseInitial = (opts, current) => {
+      const lower = current.toLowerCase();
+      for (let i = 1; i < opts.length; i++) {
+        if (lower.includes(opts[i])) return i;
+      }
+      return 0;
+    };
+    const currentInstruct = settings.get_string("instruct-text");
+
+    // Gender
+    const genderRow = new Adw.ComboRow({
+      title: _("Gender"),
+      model: Gtk.StringList.new(
+        genderOpts.map((o) => (o === "auto" ? _("Auto") : o)),
+      ),
+    });
+    genderRow.set_selected(parseInitial(genderOpts, currentInstruct));
+    genderRow.connect("notify::selected", buildPreview);
+    designGroup.add(genderRow);
+
+    // Age
+    const ageRow = new Adw.ComboRow({
+      title: _("Age"),
+      model: Gtk.StringList.new(
+        ageOpts.map((o) => (o === "auto" ? _("Auto") : o)),
+      ),
+    });
+    ageRow.set_selected(parseInitial(ageOpts, currentInstruct));
+    ageRow.connect("notify::selected", buildPreview);
+    designGroup.add(ageRow);
+
+    // Pitch
+    const pitchRow = new Adw.ComboRow({
+      title: _("Pitch"),
+      model: Gtk.StringList.new(
+        pitchOpts.map((o) => (o === "auto" ? _("Auto") : o)),
+      ),
+    });
+    pitchRow.set_selected(parseInitial(pitchOpts, currentInstruct));
+    pitchRow.connect("notify::selected", buildPreview);
+    designGroup.add(pitchRow);
+
+    // Style
+    const styleRow = new Adw.ComboRow({
+      title: _("Style"),
+      model: Gtk.StringList.new(
+        styleOpts.map((o) => (o === "auto" ? _("Auto") : o)),
+      ),
+    });
+    styleRow.set_selected(parseInitial(styleOpts, currentInstruct));
+    styleRow.connect("notify::selected", buildPreview);
+    designGroup.add(styleRow);
+
+    // English Accent
+    const accentRow = new Adw.ComboRow({
+      title: _("English Accent"),
+      model: Gtk.StringList.new(
+        accentOpts.map((o) => (o === "auto" ? _("Auto") : o)),
+      ),
+    });
+    accentRow.set_selected(parseInitial(accentOpts, currentInstruct));
+    accentRow.connect("notify::selected", buildPreview);
+    designGroup.add(accentRow);
+
+    designGroup.add(previewRow);
+
+    // Selector widgets list for toggling visibility
+    const selectorRows = [
+      genderRow,
+      ageRow,
+      pitchRow,
+      styleRow,
+      accentRow,
+      previewRow,
+    ];
+
+    // Freeform toggle logic
+    freeformRow.connect("notify::active", () => {
+      const free = freeformRow.get_active();
+      freeformEntry.visible = free;
+      selectorRows.forEach((r) => (r.visible = !free));
+      if (!free) buildPreview();
+    });
+
+    // Tips
+    const tipsGroup = new Adw.PreferencesGroup({
+      title: _("Tips"),
+      description: _(
+        "Combine freely across categories. Leave attributes as Auto to let the model decide. English accents only apply to English speech.",
+      ),
+    });
+    modePage.add(tipsGroup);
+
+    // Build initial preview
+    buildPreview();
 
     // ── Language group (visible in all modes) ──
     const langGroup = new Adw.PreferencesGroup({
@@ -186,10 +350,33 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
       "sk",
       "sv",
     ];
+    const langNames = [
+      _("Auto"),
+      _("English (en)"),
+      _("Chinese (zh)"),
+      _("Japanese (ja)"),
+      _("Spanish (es)"),
+      _("French (fr)"),
+      _("German (de)"),
+      _("Russian (ru)"),
+      _("Portuguese (pt)"),
+      _("Cantonese (yue)"),
+      _("Thai (th)"),
+      _("Italian (it)"),
+      _("Korean (ko)"),
+      _("Vietnamese (vi)"),
+      _("Indonesian (id)"),
+      _("Norwegian (no)"),
+      _("Catalan (ca)"),
+      _("Croatian (hr)"),
+      _("Lithuanian (lt)"),
+      _("Slovak (sk)"),
+      _("Swedish (sv)"),
+    ];
     const langRow = new Adw.ComboRow({
       title: _("Language"),
       subtitle: _("Keep as Auto to auto-detect the language"),
-      model: Gtk.StringList.new(languages),
+      model: Gtk.StringList.new(langNames),
     });
     const currentLang = settings.get_string("language");
     langRow.set_selected(Math.max(0, languages.indexOf(currentLang)));
@@ -199,7 +386,7 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     langGroup.add(langRow);
 
     // Set initial visibility
-    this._updateVisibility(cloneGroup, designGroup, currentMode);
+    this._updateVisibility(cloneGroup, designGroup, tipsGroup, currentMode);
 
     // ── Generation Parameters Page ──
     const paramsPage = new Adw.PreferencesPage({
@@ -445,8 +632,10 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
   // En modo "clone" se muestra el selector de audio de referencia y texto;
   // en modo "design" se muestra el campo de instrucción de voz; en modo
   // "auto" se ocultan ambos porque no requiere configuración extra.
-  _updateVisibility(cloneGroup, designGroup, mode) {
+  _updateVisibility(cloneGroup, designGroup, tipsGroup, mode) {
     cloneGroup.visible = mode === "clone";
-    designGroup.visible = mode === "design";
+    const showDesign = mode === "design" || mode === "auto";
+    designGroup.visible = showDesign;
+    tipsGroup.visible = showDesign;
   }
 }
