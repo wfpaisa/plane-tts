@@ -5,5 +5,5 @@
   "shell-version": ["49", "50"],
   "settings-schema": "org.gnome.shell.extensions.plane-tts",
   "gettext-domain": "plane-tts@wfelipe.com",
-  "url": "https://github.com/wfelipe/plane-tts"
+  "url": "https://github.com/wfpaisa/plane-tts"
 }
