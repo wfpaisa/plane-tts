@@ -31,28 +31,59 @@
 
     <!-- Design mode settings -->
     <key name="instruct-text" type="s">
-      <default>'female, neutral accent'</default>
+      <default>''</default>
       <summary>Voice Design Instruction</summary>
       <description>Text description for voice design mode (e.g. "male, British accent, low pitch")</description>
+    </key>
+
+    <!-- Language -->
+    <key name="language" type="s">
+      <default>'auto'</default>
+      <summary>Language</summary>
+      <description>Language code for TTS generation. Use 'auto' to detect automatically.</description>
     </key>
 
     <!-- Generation parameters -->
     <key name="num-step" type="i">
       <default>32</default>
-      <summary>Diffusion Steps</summary>
-      <description>Number of iterative unmasking steps. Higher = better quality but slower. Use 16 for faster inference.</description>
+      <summary>Inference Steps</summary>
+      <description>Number of inference steps. Lower = faster, higher = better quality. Range: 4-64.</description>
     </key>
 
     <key name="speed" type="d">
       <default>1.0</default>
       <summary>Speed Factor</summary>
-      <description>Speed factor: values greater than 1.0 produce faster speech, less than 1.0 produce slower speech</description>
+      <description>Speed factor. 1.0 = normal, greater than 1 = faster, less than 1 = slower. Ignored if duration is set.</description>
+    </key>
+
+    <key name="duration" type="d">
+      <default>0</default>
+      <summary>Duration</summary>
+      <description>Fixed duration in seconds. Set to 0 to use speed instead.</description>
     </key>
 
     <key name="guidance-scale" type="d">
       <default>2.0</default>
-      <summary>Guidance Scale</summary>
-      <description>Classifier-free guidance scale</description>
+      <summary>Guidance Scale (CFG)</summary>
+      <description>Classifier-free guidance scale. Range: 0-4.</description>
+    </key>
+
+    <key name="denoise" type="b">
+      <default>true</default>
+      <summary>Denoise</summary>
+      <description>Enable denoising on generated audio.</description>
+    </key>
+
+    <key name="preprocess-prompt" type="b">
+      <default>true</default>
+      <summary>Preprocess Prompt</summary>
+      <description>Apply silence removal and trimming to reference audio, add punctuation to reference text.</description>
+    </key>
+
+    <key name="postprocess-output" type="b">
+      <default>true</default>
+      <summary>Postprocess Output</summary>
+      <description>Remove long silences from generated audio.</description>
     </key>
 
     <!-- Python binary path: reemplazar [USER] por tu nombre de usuario -->

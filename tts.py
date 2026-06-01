@@ -71,6 +71,36 @@ def main():
         default=2.0,
         help="Classifier-free guidance scale",
     )
+    parser.add_argument(
+        "--duration",
+        type=float,
+        default=0,
+        help="Fixed duration in seconds. 0 = use speed instead.",
+    )
+    parser.add_argument(
+        "--language",
+        type=str,
+        default="auto",
+        help="Language code (auto, en, zh, ja, es, etc.)",
+    )
+    parser.add_argument(
+        "--denoise",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Enable/disable denoising",
+    )
+    parser.add_argument(
+        "--preprocess-prompt",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Preprocess reference audio and text",
+    )
+    parser.add_argument(
+        "--postprocess-output",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Remove long silences from output",
+    )
     args = parser.parse_args()
 
     # Lee el texto a sintetizar desde stdin. Se usa stdin en vez de argumento
@@ -117,6 +147,16 @@ def main():
             "speed": args.speed,
             "guidance_scale": args.guidance_scale,
         }
+
+        if args.duration > 0:
+            gen_kwargs["duration"] = args.duration
+
+        if args.language != "auto":
+            gen_kwargs["language"] = args.language
+
+        gen_kwargs["denoise"] = args.denoise
+        gen_kwargs["preprocess_prompt"] = args.preprocess_prompt
+        gen_kwargs["postprocess_output"] = args.postprocess_output
 
         if args.mode == "clone":
             gen_kwargs["ref_audio"] = args.ref_audio

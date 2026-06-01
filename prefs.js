@@ -127,7 +127,7 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
       text: settings.get_string("ref-text"),
       show_apply_button: true,
       tooltip_text: _(
-        "Write exactly what is said in the reference audio. If left empty, it will be detected automatically",
+        "Transcript of the reference audio. Leave empty to auto-transcribe via ASR models.",
       ),
     });
     refTextRow.connect("apply", () => {
@@ -145,7 +145,7 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     modePage.add(designGroup);
 
     const instructRow = new Adw.EntryRow({
-      title: _("Voice Description"),
+      title: _("Instruct (optional)"),
       text: settings.get_string("instruct-text"),
       show_apply_button: true,
       tooltip_text: _(
@@ -156,6 +156,47 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
       settings.set_string("instruct-text", instructRow.get_text());
     });
     designGroup.add(instructRow);
+
+    // ── Language group (visible in all modes) ──
+    const langGroup = new Adw.PreferencesGroup({
+      title: _("Language"),
+    });
+    modePage.add(langGroup);
+
+    const languages = [
+      "auto",
+      "en",
+      "zh",
+      "ja",
+      "es",
+      "fr",
+      "de",
+      "ru",
+      "pt",
+      "yue",
+      "th",
+      "it",
+      "ko",
+      "vi",
+      "id",
+      "no",
+      "ca",
+      "hr",
+      "lt",
+      "sk",
+      "sv",
+    ];
+    const langRow = new Adw.ComboRow({
+      title: _("Language"),
+      subtitle: _("Keep as Auto to auto-detect the language"),
+      model: Gtk.StringList.new(languages),
+    });
+    const currentLang = settings.get_string("language");
+    langRow.set_selected(Math.max(0, languages.indexOf(currentLang)));
+    langRow.connect("notify::selected", () => {
+      settings.set_string("language", languages[langRow.get_selected()]);
+    });
+    langGroup.add(langRow);
 
     // Set initial visibility
     this._updateVisibility(cloneGroup, designGroup, currentMode);
@@ -175,17 +216,49 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     });
     paramsPage.add(genGroup);
 
-    // Num steps
-    const numStepRow = new Adw.SpinRow({
-      title: _("Quality"),
+    // Speed (range 0.5 - 1.5)
+    const speedRow = new Adw.SpinRow({
+      title: _("Speed"),
       subtitle: _(
-        "Controls audio quality. 16 = fast but lower quality, 32 = best quality but slower",
+        "1.0 = normal. >1 faster, <1 slower. Ignored if Duration is set.",
       ),
+      digits: 2,
       adjustment: new Gtk.Adjustment({
-        lower: 16,
-        upper: 32,
+        lower: 0.5,
+        upper: 1.5,
+        step_increment: 0.05,
+        page_increment: 0.1,
+        value: settings.get_double("speed"),
+      }),
+    });
+    settings.bind("speed", speedRow, "value", Gio.SettingsBindFlags.DEFAULT);
+    genGroup.add(speedRow);
+
+    // Duration (input, default 0)
+    const durationRow = new Adw.EntryRow({
+      title: _("Duration (seconds)"),
+      text: settings.get_double("duration").toString(),
+      show_apply_button: true,
+      tooltip_text: _(
+        "Leave as 0 to use speed. Set a fixed duration in seconds to override speed.",
+      ),
+    });
+    durationRow.connect("apply", () => {
+      const val = parseFloat(durationRow.get_text()) || 0;
+      settings.set_double("duration", Math.max(0, val));
+      durationRow.set_text(Math.max(0, val).toString());
+    });
+    genGroup.add(durationRow);
+
+    // Inference Steps (range 4 - 64)
+    const numStepRow = new Adw.SpinRow({
+      title: _("Inference Steps"),
+      subtitle: _("Default: 32. Lower = faster, higher = better quality."),
+      adjustment: new Gtk.Adjustment({
+        lower: 4,
+        upper: 64,
         step_increment: 1,
-        page_increment: 4,
+        page_increment: 8,
         value: settings.get_int("num-step"),
       }),
     });
@@ -197,36 +270,16 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
     );
     genGroup.add(numStepRow);
 
-    // Speed
-    const speedRow = new Adw.SpinRow({
-      title: _("Speed"),
-      subtitle: _(
-        "How fast the voice speaks. 1.0 = normal, higher = faster, lower = slower",
-      ),
-      digits: 2,
-      adjustment: new Gtk.Adjustment({
-        lower: 0.1,
-        upper: 3.0,
-        step_increment: 0.1,
-        page_increment: 0.5,
-        value: settings.get_double("speed"),
-      }),
-    });
-    settings.bind("speed", speedRow, "value", Gio.SettingsBindFlags.DEFAULT);
-    genGroup.add(speedRow);
-
-    // Guidance scale
+    // Guidance Scale (range 0 - 4)
     const guidanceRow = new Adw.SpinRow({
-      title: _("Guidance Scale"),
-      subtitle: _(
-        "Controls how closely the voice follows instructions. Higher = more precise but less natural",
-      ),
+      title: _("Guidance Scale (CFG)"),
+      subtitle: _("Default: 2.0."),
       digits: 1,
       adjustment: new Gtk.Adjustment({
         lower: 0.0,
-        upper: 10.0,
-        step_increment: 0.5,
-        page_increment: 1.0,
+        upper: 4.0,
+        step_increment: 0.1,
+        page_increment: 0.5,
         value: settings.get_double("guidance-scale"),
       }),
     });
@@ -237,6 +290,53 @@ export default class PlaneTTSPreferences extends ExtensionPreferences {
       Gio.SettingsBindFlags.DEFAULT,
     );
     genGroup.add(guidanceRow);
+
+    // ── Processing group ──
+    const procGroup = new Adw.PreferencesGroup({
+      title: _("Processing"),
+    });
+    paramsPage.add(procGroup);
+
+    // Denoise (checkbox)
+    const denoiseRow = new Adw.SwitchRow({
+      title: _("Denoise"),
+      subtitle: _("Remove noise from generated audio. Disable for raw output."),
+    });
+    settings.bind(
+      "denoise",
+      denoiseRow,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+    procGroup.add(denoiseRow);
+
+    // Preprocess Prompt (checkbox)
+    const preprocessRow = new Adw.SwitchRow({
+      title: _("Preprocess Prompt"),
+      subtitle: _(
+        "Apply silence removal and trimming to reference audio, add punctuation to reference text.",
+      ),
+    });
+    settings.bind(
+      "preprocess-prompt",
+      preprocessRow,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+    procGroup.add(preprocessRow);
+
+    // Postprocess Output (checkbox)
+    const postprocessRow = new Adw.SwitchRow({
+      title: _("Postprocess Output"),
+      subtitle: _("Remove long silences from generated audio."),
+    });
+    settings.bind(
+      "postprocess-output",
+      postprocessRow,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+    procGroup.add(postprocessRow);
 
     // Python binary path
     const pythonGroup = new Adw.PreferencesGroup({

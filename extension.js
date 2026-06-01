@@ -249,7 +249,12 @@ export default class PlaneTTSExtension extends Extension {
     const mode = this._settings.get_string("voice-mode");
     const numStep = this._settings.get_int("num-step");
     const speed = this._settings.get_double("speed");
+    const duration = this._settings.get_double("duration");
     const guidanceScale = this._settings.get_double("guidance-scale");
+    const language = this._settings.get_string("language");
+    const denoise = this._settings.get_boolean("denoise");
+    const preprocessPrompt = this._settings.get_boolean("preprocess-prompt");
+    const postprocessOutput = this._settings.get_boolean("postprocess-output");
     const pythonBin = this._settings.get_string("python-bin");
 
     const argv = [
@@ -265,7 +270,14 @@ export default class PlaneTTSExtension extends Extension {
       speed.toString(),
       "--guidance-scale",
       guidanceScale.toString(),
+      "--language",
+      language,
     ];
+
+    if (duration > 0) argv.push("--duration", duration.toString());
+    if (!denoise) argv.push("--no-denoise");
+    if (!preprocessPrompt) argv.push("--no-preprocess-prompt");
+    if (!postprocessOutput) argv.push("--no-postprocess-output");
 
     if (mode === "clone") {
       const refAudio = this._settings.get_string("ref-audio-path");
