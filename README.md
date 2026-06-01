@@ -1,223 +1,88 @@
-# Plane TTS — Extensión de GNOME Shell
+# Plane TTS
 
-Extensión de GNOME Shell que lee en voz alta el texto seleccionado en cualquier aplicación usando [OmniVoice](https://github.com/k2-fsa/OmniVoice) para generar audio con clonación de voz, diseño de voz o modo automático.
+GNOME Shell extension that reads selected text aloud using [OmniVoice](https://github.com/k2-fsa/OmniVoice) for high-quality text-to-speech with voice cloning, voice design, or automatic mode.
 
-## Requisitos
+## Requirements
 
-- GNOME Shell 49 o 50
-- Python 3 con [OmniVoice](https://github.com/k2-fsa/OmniVoice) instalado en un virtualenv
-- GPU NVIDIA con CUDA (o Apple Silicon con MPS, o Intel Arc con XPU)
-- `paplay` (incluido con PulseAudio/PipeWire)
-- `glib-compile-schemas` (paquete `glib2` o `libglib2.0-dev`)
-- `xgettext` y `msgfmt` (paquete `gettext`)
+- GNOME Shell 49 or 50
+- Python 3 with [OmniVoice](https://github.com/k2-fsa/OmniVoice) installed in a virtualenv
+- NVIDIA GPU with CUDA (or Apple Silicon with MPS, or Intel Arc with XPU)
+- `paplay` (included with PulseAudio/PipeWire)
 
-## Estructura del proyecto
+## Installation
 
-```
-plane-tts/
-├── extension.js          # Lógica principal de la extensión
-├── prefs.js              # Panel de preferencias (GTK4/Adw)
-├── metadata.json         # Metadatos de la extensión
-├── stylesheet.css        # Estilos del indicador del panel
-├── tts.py                # Script Python que ejecuta OmniVoice
-├── install.sh            # Script de instalación
-├── schemas/
-│   ├── org.gnome.shell.extensions.plane-tts.gschema.xml
-│   └── gschemas.compiled         # Generado por glib-compile-schemas
-├── po/
-│   ├── plane-tts@wfelipe.com.pot # Plantilla de traducciones
-│   ├── es.po                     # Traducción español
-│   └── en.po                     # Traducción inglés
-└── locale/                       # Traducciones compiladas (.mo)
-    ├── es/LC_MESSAGES/plane-tts@wfelipe.com.mo
-    └── en/LC_MESSAGES/plane-tts@wfelipe.com.mo
+### 1. Install OmniVoice
+
+```bash
+git clone https://github.com/k2-fsa/OmniVoice.git && cd OmniVoice && uv sync && uv pip install -e .
 ```
 
-## Instalación
-
-### 1. Clonar el repositorio
+### 2. Install the extension
 
 ```bash
 git clone https://github.com/wfelipe/plane-tts.git
 cd plane-tts
+bun run build
+bash install.sh
 ```
 
-### 2. Compilar schemas y traducciones
+### 3. Enable
 
-```bash
-# Compilar GSettings schemas
-glib-compile-schemas schemas/
-
-# Compilar traducciones
-mkdir -p locale/es/LC_MESSAGES locale/en/LC_MESSAGES
-msgfmt po/es.po -o locale/es/LC_MESSAGES/plane-tts@wfelipe.com.mo
-msgfmt po/en.po -o locale/en/LC_MESSAGES/plane-tts@wfelipe.com.mo
-```
-
-### 3. Instalar la extensión
-
-```bash
-chmod +x install.sh
-./install.sh
-```
-
-Esto crea un symlink en `~/.local/share/gnome-shell/extensions/plane-tts@wfelipe.com` apuntando al directorio del proyecto. Cualquier cambio en el código se refleja automáticamente (solo hay que reiniciar GNOME Shell).
-
-### 4. Reiniciar GNOME Shell
-
-En **Wayland** (por defecto en GNOME 49+): cierra sesión y vuelve a iniciar sesión.
-
-### 5. Habilitar la extensión
+Log out and back in (required on Wayland), then:
 
 ```bash
 gnome-extensions enable plane-tts@wfelipe.com
 ```
 
-### 6. Configurar
+### 4. Configure
 
 ```bash
 gnome-extensions prefs plane-tts@wfelipe.com
 ```
 
-Desde las preferencias puedes:
+Set the Python path to your OmniVoice virtualenv in the **Model** tab (e.g. `/home/you/OmniVoice/.venv/bin/python`).
 
-- **Elegir modo de voz**: clonar (con audio de referencia), diseñar (con descripción de texto) o automático
-- **Subir audio de referencia** para clonación de voz
-- **Ajustar parámetros**: pasos de difusión, velocidad, escala de guía
-- **Ver atajo de teclado** (`Super+Shift+T` por defecto)
+## Usage
 
-## Configurar OmniVoice
+1. Select text in any application
+2. Press **Super+Shift+T** (default shortcut) or click the panel icon → **Read Selection**
+3. The panel icon changes color to indicate status:
+   - Yellow: generating audio
+   - Green: playing
+   - Red: error (resets after 3 seconds)
+4. To stop playback: click the panel icon → **Stop**
 
-La extensión espera que OmniVoice esté instalado en un virtualenv. Edita la ruta del Python en `extension.js`:
+## Preferences
 
-```javascript
-const PYTHON_BIN = "/home/felipe/projects/OmniVoice/.venv/bin/python";
-```
+- **Voice**: choose between clone (from audio sample), design (from text description), or auto mode
+- **Parameters**: inference steps, speed, duration, guidance scale, processing toggles
+- **Model**: Python path, installation commands, documentation link
+- **Shortcut**: customize the keyboard shortcut
 
-Cámbiala a la ruta de tu virtualenv con OmniVoice instalado.
+## Development
 
-## Uso
+See [docs/readme-dev.md](docs/readme-dev.md) for build commands, project structure, translations, and debugging instructions.
 
-1. **Selecciona texto** con el mouse en cualquier aplicación
-2. **Presiona `Super+Shift+T`** o haz clic en el ícono del panel → "Leer selección"
-3. El ícono del panel cambia de color según el estado:
-   - 🟡 Amarillo: generando audio
-   - 🟢 Verde: reproduciendo
-   - 🔴 Rojo: error (vuelve a normal en 3 segundos)
-4. Para detener: clic en el ícono → "Detener"
-
-## Traducciones
-
-### Agregar un nuevo idioma
-
-1. Copia la plantilla POT a un nuevo archivo `.po`:
-
-```bash
-cp po/plane-tts@wfelipe.com.pot po/fr.po  # Ejemplo: francés
-```
-
-2. Edita `po/fr.po`:
-   - Completa los campos del header (`Language: fr`, `Language-Team: French`, etc.)
-   - Traduce cada `msgstr` (el `msgid` contiene el texto en español)
-
-3. Compila la traducción:
-
-```bash
-mkdir -p locale/fr/LC_MESSAGES
-msgfmt po/fr.po -o locale/fr/LC_MESSAGES/plane-tts@wfelipe.com.mo
-```
-
-### Regenerar la plantilla POT
-
-Después de agregar o modificar textos con `_()` en el código:
-
-```bash
-xgettext --from-code=UTF-8 --output=po/plane-tts@wfelipe.com.pot *.js
-```
-
-### Actualizar traducciones existentes
-
-Después de regenerar el POT, actualiza los archivos `.po` existentes:
-
-```bash
-msgmerge --update po/es.po po/plane-tts@wfelipe.com.pot
-msgmerge --update po/en.po po/plane-tts@wfelipe.com.pot
-```
-
-Y luego recompila los `.mo`.
-
-## Depuración
-
-Ver logs de GNOME Shell filtrados por la extensión:
-
-```bash
-journalctl -f -o cat /usr/bin/gnome-shell | grep "Plane TTS"
-```
-
-Ver todos los logs de GNOME Shell:
-
-```bash
-journalctl -f -o cat /usr/bin/gnome-shell
-```
-
-## Probar en sesión aislada
-
-Sin afectar tu escritorio actual (requiere `mutter-devkit` en GNOME 49+):
-
-```bash
-sudo pacman -S mutter-devkit
-dbus-run-session gnome-shell --devkit --wayland
-```
-
-Dentro de la sesión nested, abre una terminal y habilita la extensión.
-
-## Desinstalar
-
-```bash
-gnome-extensions disable plane-tts@wfelipe.com
-rm ~/.local/share/gnome-shell/extensions/plane-tts@wfelipe.com
-```
-
-## Comandos
-
-```bash
-# Compila schemas de GSettings + traducciones (.po → .mo)
-bun run build
-
-# Compila solo los schemas de GSettings
-bun run build:schema
-
-# Compila solo las traducciones (.po → .mo)
-bun run build:translations
-
-# Regenera el archivo .pot escaneando los _() en el código
-bun run create:translations
-
-# Actualiza los .po existentes con strings nuevos del .pot
-bun run merge:translations
-
-# Todo junto: regenerar .pot → actualizar .po → compilar .mo
-bun run update:translations
-
-# Instala la extensión (symlink + compila schemas)
+```sh
+# Install the extension (symlink + compile schemas)
 bun run install:extension
 
-# Habilita la extensión en GNOME Shell
+# Enable the extension in GNOME Shell
 bun run enable
 
-# Deshabilita la extensión
+# Disable the extension
 bun run disable
 
-# Abre el panel de preferencias
+# Open the preferences panel
 bun run prefs
 
-# Ver todos los logs de GNOME Shell en tiempo real
+# View all GNOME Shell logs in real time
 bun run logs
 
-# Ver solo los logs de Plane TTS
+# View only Plane TTS logs
 bun run logs:extension
 
-# Abre una sesión nested de GNOME Shell para pruebas
+# Open a nested GNOME Shell session for testing
 bun run wayland:session
 ```
 
