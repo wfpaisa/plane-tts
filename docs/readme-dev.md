@@ -52,6 +52,28 @@ bun run logs              # All GNOME Shell logs
 bun run logs:extension    # Filtered to "Plane TTS"
 ```
 
+## Packaging
+
+Generate a zip ready for distribution or upload to [extensions.gnome.org](https://extensions.gnome.org):
+
+```bash
+bun run pack    # Build + generate plane-tts@wfelipe.com.zip
+```
+
+To validate the package with [shexli](https://github.com/nicoth-in/shexli) (EGO static analysis):
+
+```bash
+bun run lint    # Pack + run shexli against the zip
+```
+
+The zip includes: `metadata.json`, `extension.js`, `prefs.js`, `stylesheet.css`, `tts.py`, `schemas/` and `locale/`.
+
+To install from the zip:
+
+```bash
+gnome-extensions install plane-tts@wfelipe.com.zip --force
+```
+
 ## Isolated Wayland Session
 
 Test without affecting your desktop (requires `mutter-devkit` on GNOME 49+):
