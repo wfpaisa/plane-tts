@@ -2,6 +2,14 @@
 
 GNOME Shell extension that reads selected text aloud using [OmniVoice](https://github.com/k2-fsa/OmniVoice) for high-quality text-to-speech with voice cloning, voice design, or automatic mode.
 
+<details>
+<summary>Screenshots</summary>
+   <img src="docs/screenshots/plane-tts01.png" width="500">
+   <img src="docs/screenshots/plane-tts02.png" width="500">
+   <img src="docs/screenshots/plane-tts03.png" width="500">
+   <img src="docs/screenshots/plane-tts04.png" width="500">
+</details>
+
 ## Requirements
 
 - GNOME Shell 49 or 50
@@ -20,7 +28,7 @@ git clone https://github.com/k2-fsa/OmniVoice.git && cd OmniVoice && uv sync && 
 ### 2. Install the extension
 
 ```bash
-git clone https://github.com/wfelipe/plane-tts.git
+git clone https://github.com/wfpaisa/plane-tts.git
 cd plane-tts
 bun run build
 bash install.sh
